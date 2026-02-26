@@ -1,0 +1,7 @@
+torch
+llm-compressor
+vllm
+lm_eval[api]
+datasets
+numpy
+matplotlib
