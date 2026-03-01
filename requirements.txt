@@ -5,3 +5,6 @@ lm_eval[api]
 datasets
 numpy
 matplotlib
+accelerate
+seaborn
+scipy
