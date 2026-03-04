@@ -19,8 +19,8 @@ from compressed_tensors.quantization import (
 )
 
 
-SRC = "../LLaMA-2-7b-hf"
-DST = "../LLaMA-2-7b-Quantized"
+SRC = "../LLaMA-2-7B"
+DST = "../LLaMA-2-7B-Quantized"
 DATASET = "./data/c4_calib_4k"
 
 NUM_CALIBRATION_SAMPLES = 256
@@ -55,7 +55,7 @@ from compressed_tensors.quantization import (
     QuantizationScheme,
 )
 
-def main(bits=4, group_size=64, symmetric=False, algo="AWQ"):
+def main(type=QuantizationType.INT, bits=4, group_size=64, symmetric=False, algo="AWQ"):
     print(f"Source: {SRC}")
     print(f"Destination: {DST}")
 
@@ -71,10 +71,12 @@ def main(bits=4, group_size=64, symmetric=False, algo="AWQ"):
     ds = prepare_calibration_dataset(tokenizer)
 
     # 只配置权重：W4A16 = 权重4bit + activation fp16
+    strategy = QuantizationStrategy.GROUP if type == "int" else QuantizationStrategy.TENSOR_GROUP
+
     weights_args = QuantizationArgs(
         num_bits=bits,
-        type=QuantizationType.INT,
-        strategy=QuantizationStrategy.GROUP,
+        type=type,
+        strategy=strategy,
         group_size=group_size,
         symmetric=symmetric, 
         dynamic=False,
@@ -128,11 +130,13 @@ if __name__ == "__main__":
         parser.add_argument("--group-size", type=int, default=64, help="Group size for quantization (default: 64)")
         parser.add_argument("--symmetric", action="store_true", help="Use symmetric quantization")
         parser.add_argument("--algo", type=str, choices=["AWQ", "GPTQ", "RTN"], default="AWQ", help="Quantization algorithm (default: AWQ)")
+        parser.add_argument("--type", type=str, choices=[QuantizationType.INT, QuantizationType.FLOAT], default=QuantizationType.INT, help="Quantization type (default: int)")
         return parser.parse_args()
 
     if __name__ == "__main__":
         args = parse_args()
         main(
+            type=args.type,
             bits=args.bits,
             group_size=args.group_size,
             symmetric=args.symmetric,

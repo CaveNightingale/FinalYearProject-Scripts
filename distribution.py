@@ -7,7 +7,7 @@ import numpy as np
 import os
 import gc
 
-SRC = "../Llama-2-7b"
+SRC = "../LLaMA-2-7B"
 TEMP = "./temp"
 CALIB = "./data/c4_calib_4k"
 OUT_DIR = "module_distribution"

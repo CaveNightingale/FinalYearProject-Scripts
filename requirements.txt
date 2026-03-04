@@ -1,5 +1,6 @@
+numpy
 torch
-llm-compressor
+llmcompressor
 vllm
 lm_eval[api]
 datasets
