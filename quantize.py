@@ -3,6 +3,10 @@
 Python-only quantization script using llmcompressor Python API.
 """
 
+import argparse
+from llmcompressor.modifiers.quantization import QuantizationModifier
+from llmcompressor.observers import MinMaxTuple, Observer
+from transformers import AutoModelForCausalLM, AutoTokenizer
 import os
 import sys
 import torch
@@ -36,24 +40,8 @@ def ensure_dst_parent():
 def prepare_calibration_dataset(tokenizer):
     return load_from_disk(DATASET)
 
-
-import os
-import sys
-import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
-
-from llmcompressor import oneshot
-from llmcompressor.modifiers.awq import AWQModifier
-from llmcompressor.modifiers.quantization import QuantizationModifier
-import argparse
-
 # compressed_tensors 的量化类型/策略/scheme
-from compressed_tensors.quantization import (
-    QuantizationArgs,
-    QuantizationType,
-    QuantizationStrategy,
-    QuantizationScheme,
-)
+
 
 def main(type=QuantizationType.INT, bits=4, group_size=64, symmetric=False, algo="AWQ"):
     print(f"Source: {SRC}")
@@ -65,22 +53,31 @@ def main(type=QuantizationType.INT, bits=4, group_size=64, symmetric=False, algo
 
     ensure_dst_parent()
 
-    model = AutoModelForCausalLM.from_pretrained(SRC, dtype=torch.float16)
+    model = AutoModelForCausalLM.from_pretrained(SRC, dtype=torch.float32)
     tokenizer = AutoTokenizer.from_pretrained(SRC)
 
     ds = prepare_calibration_dataset(tokenizer)
 
-    # 只配置权重：W4A16 = 权重4bit + activation fp16
-    strategy = QuantizationStrategy.GROUP if type == "int" else QuantizationStrategy.TENSOR_GROUP
-
-    weights_args = QuantizationArgs(
-        num_bits=bits,
-        type=type,
-        strategy=strategy,
-        group_size=group_size,
-        symmetric=symmetric, 
-        dynamic=False,
-    )
+    if type == QuantizationType.INT:
+        weights_args = QuantizationArgs(
+            num_bits=bits,
+            type=type,
+            strategy=QuantizationStrategy.GROUP,
+            group_size=group_size,
+            symmetric=symmetric,
+            dynamic=False,
+        )
+    elif type == QuantizationType.FLOAT:
+        scale_dtype = torch.float8_e4m3fn if bits == 4 else torch.float16
+        weights_args = QuantizationArgs(
+            num_bits=bits,
+            type=type,
+            strategy=QuantizationStrategy.TENSOR_GROUP,
+            scale_dtype=scale_dtype,
+            group_size=group_size,
+            symmetric=symmetric,
+            dynamic=False,
+        )
 
     quant_scheme = QuantizationScheme(
         targets=["Linear"],
@@ -117,7 +114,8 @@ def main(type=QuantizationType.INT, bits=4, group_size=64, symmetric=False, algo
         num_calibration_samples=NUM_CALIBRATION_SAMPLES,
     )
 
-    model.save_pretrained(DST, save_compressed=True)
+    model.save_pretrained(DST, save_compressed=True,
+                          safe_serialization=True, max_shard_size="2GB")
     tokenizer.save_pretrained(DST)
 
     print("Quantization finished. Compressed model saved to:", DST)
@@ -125,12 +123,22 @@ def main(type=QuantizationType.INT, bits=4, group_size=64, symmetric=False, algo
 
 if __name__ == "__main__":
     def parse_args():
-        parser = argparse.ArgumentParser(description="Quantize a model using llmcompressor.")
-        parser.add_argument("--bits", type=int, default=4, help="Number of bits for quantization (default: 4)")
-        parser.add_argument("--group-size", type=int, default=64, help="Group size for quantization (default: 64)")
-        parser.add_argument("--symmetric", action="store_true", help="Use symmetric quantization")
-        parser.add_argument("--algo", type=str, choices=["AWQ", "GPTQ", "RTN"], default="AWQ", help="Quantization algorithm (default: AWQ)")
-        parser.add_argument("--type", type=str, choices=[QuantizationType.INT, QuantizationType.FLOAT], default=QuantizationType.INT, help="Quantization type (default: int)")
+        parser = argparse.ArgumentParser(
+            description="Quantize a model using llmcompressor.")
+        parser.add_argument("--bits", type=int, default=4,
+                            help="Number of bits for quantization (default: 4)")
+        parser.add_argument("--group-size", type=int, default=64,
+                            help="Group size for quantization (default: 64)")
+        parser.add_argument("--symmetric", action="store_true",
+                            help="Use symmetric quantization")
+        parser.add_argument("--algo", type=str, choices=[
+                            "AWQ", "GPTQ", "RTN"], default="RTN", help="Quantization algorithm (default: AWQ)")
+        parser.add_argument("--type", type=str, choices=[QuantizationType.INT, QuantizationType.FLOAT, "none"],
+                            default="none", help="Quantization type (default: none)")
+        # Calibrating KV cache to fp8 will fail for LLaMA-2-7B for unknown reasons, so we keep it as a no-op for now.
+        # Just use default scale as a fallback to enable fp8 quantization of KV cache in vLLM, which is pure inference-time operation and does not require calibration.
+        parser.add_argument("--kv-fp8", action="store_true",
+                            help="Whether to quantize KV cache to fp8 (no-op)")
         return parser.parse_args()
 
     if __name__ == "__main__":
@@ -140,5 +148,5 @@ if __name__ == "__main__":
             bits=args.bits,
             group_size=args.group_size,
             symmetric=args.symmetric,
-            algo=args.algo
+            algo=args.algo,
         )
