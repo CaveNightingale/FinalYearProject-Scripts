@@ -10,6 +10,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 import os
 import sys
 import torch
+import json
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from datasets import load_dataset, load_from_disk
 from llmcompressor import oneshot
@@ -20,11 +21,13 @@ from compressed_tensors.quantization import (
     QuantizationType,
     QuantizationStrategy,
     QuantizationScheme,
+    fake_quantize,
 )
 
 
 SRC = "../LLaMA-2-7B"
 DST = "../LLaMA-2-7B-Quantized"
+LOG = "./quantization_error_log.txt"
 DATASET = "./data/c4_calib_4k"
 
 NUM_CALIBRATION_SAMPLES = 256
@@ -40,8 +43,28 @@ def ensure_dst_parent():
 def prepare_calibration_dataset(tokenizer):
     return load_from_disk(DATASET)
 
-# compressed_tensors 的量化类型/策略/scheme
-
+def get_quant_weight(module, args):
+    assert isinstance(module, torch.nn.Linear)
+    weight = module.weight.data
+    weight_scale = module.weight_scale.data
+    weight_zero_point = module.weight_zero_point.data
+    weight_global_scale = module.weight_global_scale.data if hasattr(module, "weight_global_scale") else None
+    quantized_weight = fake_quantize(
+        weight,
+        scale=weight_scale,
+        zero_point=weight_zero_point,
+        global_scale=weight_global_scale,
+        quant_args=args,
+    )
+    diff = quantized_weight - weight
+    return {
+        "l1": diff.abs().mean().item(),
+        "l2": (diff ** 2).mean().item(),
+        "l3": (diff.abs() ** 3).mean().item(),
+        "l4": (diff.abs() ** 4).mean().item(),
+        "m1": diff.mean().item(),
+        "m3": (diff ** 3).mean().item(),
+    }
 
 def main(type=QuantizationType.INT, bits=4, group_size=64, symmetric=False, algo="AWQ"):
     print(f"Source: {SRC}")
@@ -117,6 +140,16 @@ def main(type=QuantizationType.INT, bits=4, group_size=64, symmetric=False, algo
     model.save_pretrained(DST, save_compressed=True,
                           safe_serialization=True, max_shard_size="2GB")
     tokenizer.save_pretrained(DST)
+
+    if algo == "RTN":
+        logs = {}
+        for name, module in model.named_modules():
+            if hasattr(module, "weight") and hasattr(module, "weight_scale") and hasattr(module, "weight_zero_point"):
+                quant_weight_info = get_quant_weight(module, weights_args)
+                logs[name] = quant_weight_info
+        with open(LOG, "w") as log_file:
+            json.dump(logs, log_file, indent=4)
+            
 
     print("Quantization finished. Compressed model saved to:", DST)
 

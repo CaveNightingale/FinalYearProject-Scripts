@@ -21,7 +21,6 @@ else
   bash start-vllm.sh &
 fi
 
-sleep 5
 bash start-lm-eval.sh
 
 kill $(jobs -p)
