@@ -1,7 +1,7 @@
-numpy
 torch
-llmcompressor
-vllm
+torch==2.9.1
+wheel
+compressed_tensors==0.14.0
 lm_eval[api]
 datasets
 numpy
@@ -9,3 +9,4 @@ matplotlib
 accelerate
 seaborn
 scipy
+cbor2

@@ -23,4 +23,4 @@ fi
 
 bash start-lm-eval.sh
 
-kill $(jobs -p)
+pkill vllm
