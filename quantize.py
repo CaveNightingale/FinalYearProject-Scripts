@@ -137,6 +137,7 @@ def main(type=QuantizationType.INT, bits=4, group_size=64, symmetric=False, algo
         num_calibration_samples=NUM_CALIBRATION_SAMPLES,
     )
 
+    model = model.half()
     model.save_pretrained(DST, save_compressed=True,
                           safe_serialization=True, max_shard_size="2GB")
     tokenizer.save_pretrained(DST)

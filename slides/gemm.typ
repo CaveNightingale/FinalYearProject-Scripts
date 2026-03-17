@@ -29,6 +29,22 @@
   sans-fonts: "Calibri",
 )
 #set math.mat(delim: "[")
+#let dot-matrix((x, y), rows: 10, cols: 10, space: 8pt, prefix: none) = {
+  import draw: *
+  for i in range(0, rows) {
+    for j in range(0, cols) {
+      circle((x + j * space, y - i * space), radius: 2pt, fill: black, name: if prefix != none {
+        prefix + "_(" + str(i) + "," + str(j) + ")"
+      } else {
+        none
+      })
+    }
+  }
+}
+#let elements-in-dot-matrix(prefix, x: 0, y: 0, rows: 10, cols: 10) = (
+  prefix + "_(" + str(x) + "," + str(y) + ")",
+  prefix + "_(" + str(x + rows - 1) + "," + str(y + cols - 1) + ")",
+)
 
 #align(horizon)[
   #text(size: 32pt, weight: "bold")[
@@ -36,6 +52,93 @@
   ]
 
   #text(style: "italic")[January 2025]
+]
+
+#pagebreak()
+
+#note(title: "Native Precision")[
+  Currently, most large language models are trained and distributed in 16-bit precision, including IEEE 754 half-precision floating point (FP16) and Brain Floating Point (BF16) (i.e. $"fp16_e5m11"$ and $"fp16_e8m7"$, respectively). When we refer to $"fp16"$ in the context of this presentation, we are referring to both FP16 and BF16, unless otherwise specified.
+
+  Notation `eXmY` means that the floating-point format has $1$ sign bit, $X$ exponent bits, and $Y$ mantissa bits. For example, `e4m3` means that the floating-point format has $1$ sign bit, $4$ exponent bits, and $3$ mantissa bits.
+
+  Notation $"fp16"(dot)$ means casting the value to $"fp16"$ numerically, and $[dot]_"fp16"$ means that interpret the bits of the value as $"fp16"$. 
+]
+
+#pagebreak()
+
+#note(title: "Swizzling")[
+  In the context of quantization, swizzling refers to the process of rearranging the bits of quantized values to optimize memory access patterns and computational efficiency. So if you dump the quantized matrix in the memory, you may find layouts look like:
+  #canvas({
+    import draw: *
+
+    let points = (
+      (0, 0),
+      (0, 3),
+      (1, 0),
+      (1, 3),
+      (2, 0),
+      (2, 3),
+      (3, 0),
+      (3, 3),
+      (0, 4),
+      (0, 7),
+      (1, 4),
+      (1, 7),
+      (2, 4),
+      (2, 7),
+      (3, 4),
+      (3, 7),
+      (0, 8),
+      (0, 11),
+      (1, 8),
+      (1, 11),
+      (2, 8),
+      (2, 11),
+      (3, 8),
+      (3, 11),
+      (4, 0),
+      (4, 3),
+      (5, 0),
+      (5, 3),
+      (6, 0),
+      (6, 3),
+      (7, 0),
+      (7, 3),
+      (4, 4),
+      (4, 7),
+      (5, 4),
+      (5, 7),
+      (6, 4),
+      (6, 7),
+      (7, 4),
+      (7, 7),
+      (4, 8)
+    )
+
+    dot-matrix((0pt, 0pt), rows: 12, cols: 12, space: 20pt, prefix: "w")
+    set-style(stroke: gray + 2pt)
+    rect-around(
+      ..elements-in-dot-matrix("w", cols: 4, rows: 4, x: 4, y: 8),
+      padding: 4pt,
+      radius: 2pt,
+      name: "tile",
+    )
+    content((rel: (2em, 0pt), to: "tile.east"), anchor: "mid-west", name: "tile-text")[
+      Example Tile (4x4) (Actual tile sizes are much larger, e.g. 16x64)
+    ]
+    for (i, (a, b)) in points.windows(2).enumerate() {
+      let start = "w_(" + str(a.at(0)) + "," + str(a.at(1)) + ")"
+      let end = "w_(" + str(b.at(0)) + "," + str(b.at(1)) + ")"
+      let c = 180deg * i / points.len()
+      let c = color.hsl(c, 50%, 50%)
+      if i == points.len() - 2 {
+        line(start, end, stroke: c + 2pt, mark: (end: ">", width: 10pt, length: 10pt, fill: c))
+      } else {
+        line(start, end, stroke: c + 2pt)
+      }
+    }
+
+  })
 ]
 
 #pagebreak()
@@ -241,9 +344,36 @@ $
 where $a$ is the input activation, $s$ is the scale, and $a_T$ is the activation quantized to type $T$.
 - Replace all $"fp16"$ with $T$ in the  weight dequantization and matrix multiplication steps and use the first-substract-then-scale dequantization formula if zero-point exists.
 
-==== NVFP4 and MXFP4
-- If weight is quantized to NVFP4 or MXFP4 format, we need to dequantize the scales using global scale first $s_q = s_"global" s_"fp8"$.
-- In MXFP4, if activation quantization is enabled, round up the scale factor.
+#pagebreak()
+
+==== NVFP4 
+- NVFP4 is a $"e2m1"$ floating-point format that has two scaling factors, one for the the groups and one for the entire matrix, namely $s_"group"$ and $s_"global"$, and they are typed $"fp8_e4m3"$ and $"fp16"$, respectively.
+- Constraint: $s_"group" > 0$ and $s_"global" > 0$, because $"e4m3"$ is completely symmetric, and if $s < 0$, we can take the negative out of the quantized value and only keep the absolute value.
+- Dequantization formula by definition:
+$
+  w_q = [s_"global"]_"fp16" "fp16"([s_"group"]_"fp8_e4m3fn") "fp16"(w_"fp4_e2m1fn")
+$
+
+#pagebreak()
+===== Marlin's trick on NVFP4: Take $"fp16_e5m11"$ as an example.
+- The kernel use bit manipulation to move the bits of $"fp4_e2m1fn"$ to respect positions in $"fp16_e5m11"$, so the intepretation of the quantized value is $"fp16"(w_"fp4_e2m1fn") times 2^(-14)$
+- In the weight preprocessing the group-wise scale is casted to $"unsigned fp8_e5m3fn"$ (valid since $s_"group" > 0$) and multiplied with $2^7$, and the global scale is also multiplied with $2^7$.
+- In the weight dequantization, the weight is only multiplied with the group-wise scale, but not the global scale, so that the exponent part of the dequantized value is closer to zero, which improves numerical stability.
+- After multiplying with the activation, the global scale is applied to the output activation.
+- Overall steps:
+$
+  W_"q" X = & "fp16"(W_"fp4_e2m1fn" times 2^(-14)) "fp16"("Broadcast"([s_"group"]_"unsigned fp8_e5m3fn" times 2^7))\
+  & X_"fp16" "fp32"([s_"global"]_"fp16" times 2^7)
+$
+
+#pagebreak()
+- The respective steps for brain float 16, i.e $"fp16_e8m7"$:
+$
+  W_"q" X = & "fp16_e8m7"(W_"fp4_e2m1fn" times 2^(-126)) \
+  & "fp16_e8m7"("Broadcast"([s_"group"]_"unsigned fp8_e5m3fn" times 2^7))\
+  & X_"fp16" "fp32"([s_"global"]_"fp16_e8m7" times 2^119)
+$
+
 
 #pagebreak()
 
