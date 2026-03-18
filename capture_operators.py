@@ -11,6 +11,7 @@ import os
 import typing
 import contextlib
 import torch.nn as nn
+from vllm.util.torch_utils import infer_schema, vllm_lib
 
 class CaptureMode(TorchDispatchMode):
     _instance = None
@@ -136,16 +137,13 @@ class CaptureMode(TorchDispatchMode):
 
 def direct_register_custom_op_patched(
     op_name: str,
-    op_func: Callable,
+    op_func: typing.Callable,
     mutates_args: list[str] | None = None,
-    fake_impl: Callable | None = None,
-    target_lib: Library | None = None,
+    fake_impl: typing.Callable | None = None,
+    target_lib: torch.Library | None = None,
     dispatch_key: str | None = None,
     tags: tuple[torch.Tag, ...] = (),
 ):
-    from torch.utils._python_dispatch import TorchDispatchMode
-    from vllm.log_ops import CaptureMode
-
     def wrapper(*args, **kwargs):
         if CaptureMode._instance is not None:
             with CaptureMode._instance:
