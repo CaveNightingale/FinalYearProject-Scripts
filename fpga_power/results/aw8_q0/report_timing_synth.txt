@@ -1,0 +1,377 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
+---------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version      : Vivado v.2025.2 (lin64) Build 6299465 Fri Nov 14 12:34:56 MST 2025
+***
+***
+***
+| Design            : matmul_top
+| Device            : xcku3p-ffva676
+| Speed File        : -2  PRODUCTION 1.29 05-01-2022
+| Design State      : Synthesized
+| Temperature Grade : E
+---------------------------------------------------------------------------------------------------------------------------------------------------
+
+Timing Summary Report
+
+------------------------------------------------------------------------------------------------
+| Timer Settings
+| --------------
+------------------------------------------------------------------------------------------------
+
+  Enable Multi Corner Analysis               :  Yes
+  Enable Pessimism Removal                   :  Yes
+  Pessimism Removal Resolution               :  Nearest Common Node
+  Enable Input Delay Default Clock           :  No
+  Enable Preset / Clear Arcs                 :  No
+  Disable Flight Delays                      :  No
+  Ignore I/O Paths                           :  No
+  Timing Early Launch at Borrowing Latches   :  No
+  Borrow Time for Max Delay Exceptions       :  Yes
+  Merge Timing Exceptions                    :  Yes
+  Inter-SLR Compensation                     :  Conservative
+
+  Corner  Analyze    Analyze    
+  Name    Max Paths  Min Paths  
+  ------  ---------  ---------  
+  Slow    Yes        Yes        
+  Fast    Yes        Yes        
+
+
+------------------------------------------------------------------------------------------------
+| Report Methodology
+| ------------------
+------------------------------------------------------------------------------------------------
+
+No report available as report_methodology has not been run prior. Run report_methodology on the current design for the summary of methodology violations.
+
+
+
+check_timing report
+
+Table of Contents
+-----------------
+1. checking no_clock (0)
+2. checking constant_clock (0)
+3. checking pulse_width_clock (0)
+4. checking unconstrained_internal_endpoints (0)
+5. checking no_input_delay (125)
+6. checking no_output_delay (66)
+7. checking multiple_clock (0)
+8. checking generated_clocks (0)
+9. checking loops (4)
+10. checking partial_input_delay (0)
+11. checking partial_output_delay (0)
+12. checking latch_loops (0)
+
+1. checking no_clock (0)
+------------------------
+ There are 0 register/latch pins with no clock.
+
+
+2. checking constant_clock (0)
+------------------------------
+ There are 0 register/latch pins with constant_clock.
+
+
+3. checking pulse_width_clock (0)
+---------------------------------
+ There are 0 register/latch pins which need pulse_width check
+
+
+4. checking unconstrained_internal_endpoints (0)
+------------------------------------------------
+ There are 0 pins that are not constrained for maximum delay.
+
+ There are 0 pins that are not constrained for maximum delay due to constant clock.
+
+
+5. checking no_input_delay (125)
+--------------------------------
+ There are 125 input ports with no input delay specified. (HIGH)
+
+ There are 0 input ports with no input delay but user has a false path constraint.
+
+
+6. checking no_output_delay (66)
+--------------------------------
+ There are 66 ports with no output delay specified. (HIGH)
+
+ There are 0 ports with no output delay but user has a false path constraint
+
+ There are 0 ports with no output delay but with a timing clock defined on it or propagating through it
+
+
+7. checking multiple_clock (0)
+------------------------------
+ There are 0 register/latch pins with multiple clocks.
+
+
+8. checking generated_clocks (0)
+--------------------------------
+ There are 0 generated clocks that are not connected to a clock source.
+
+
+9. checking loops (4)
+---------------------
+ There are 4 combinational loops in the design. (HIGH)
+
+
+10. checking partial_input_delay (0)
+------------------------------------
+ There are 0 input ports with partial input delay specified.
+
+
+11. checking partial_output_delay (0)
+-------------------------------------
+ There are 0 ports with partial output delay specified.
+
+
+12. checking latch_loops (0)
+----------------------------
+ There are 0 combinational latch loops in the design through latch input
+
+
+
+------------------------------------------------------------------------------------------------
+| Design Timing Summary
+| ---------------------
+------------------------------------------------------------------------------------------------
+
+    WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints     WPWS(ns)     TPWS(ns)  TPWS Failing Endpoints  TPWS Total Endpoints  
+    -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------     --------     --------  ----------------------  --------------------  
+      0.142        0.000                      0                26278       -0.068     -173.720                   4337                26278        1.800        0.000                       0                  8183  
+
+
+Timing constraints are not met.
+
+
+------------------------------------------------------------------------------------------------
+| Clock Summary
+| -------------
+------------------------------------------------------------------------------------------------
+
+Clock    Waveform(ns)         Period(ns)      Frequency(MHz)
+-----    ------------         ----------      --------------
+sys_clk  {0.000 2.500}        5.000           200.000         
+
+
+------------------------------------------------------------------------------------------------
+| Intra Clock Table
+| -----------------
+------------------------------------------------------------------------------------------------
+
+Clock             WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints     WPWS(ns)     TPWS(ns)  TPWS Failing Endpoints  TPWS Total Endpoints  
+-----             -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------     --------     --------  ----------------------  --------------------  
+sys_clk             0.142        0.000                      0                26278       -0.068     -173.720                   4337                26278        1.800        0.000                       0                  8183  
+
+
+------------------------------------------------------------------------------------------------
+| Inter Clock Table
+| -----------------
+------------------------------------------------------------------------------------------------
+
+From Clock    To Clock          WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints  
+----------    --------          -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------  
+
+
+------------------------------------------------------------------------------------------------
+| Other Path Groups Table
+| -----------------------
+------------------------------------------------------------------------------------------------
+
+Path Group    From Clock    To Clock          WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints  
+----------    ----------    --------          -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------  
+
+
+------------------------------------------------------------------------------------------------
+| Timing Details
+| --------------
+------------------------------------------------------------------------------------------------
+
+
+---------------------------------------------------------------------------------------------------
+From Clock:  sys_clk
+  To Clock:  sys_clk
+
+Setup :            0  Failing Endpoints,  Worst Slack        0.142ns,  Total Violation        0.000ns
+Hold  :         4337  Failing Endpoints,  Worst Slack       -0.068ns,  Total Violation     -173.720ns
+PW    :            0  Failing Endpoints,  Worst Slack        1.800ns,  Total Violation        0.000ns
+---------------------------------------------------------------------------------------------------
+
+
+Max Delay Paths
+--------------------------------------------------------------------------------------
+Slack (MET) :             0.142ns  (required time - arrival time)
+  Source:                 gemm_inst/g_y_quant[0].y_fp32_sum_normalize_fp16_mant_in_reg[14]/C
+                            (rising edge-triggered cell FDCE clocked by sys_clk  {rise@0.000ns fall@2.500ns period=5.000ns})
+  Destination:            gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[1].y_skew_reg[1][0]_srl2_gemm_inst_g_y_quant_c_13/D
+                            (rising edge-triggered cell SRL16E clocked by sys_clk  {rise@0.000ns fall@2.500ns period=5.000ns})
+  Path Group:             sys_clk
+  Path Type:              Setup (Max at Slow Process Corner)
+  Requirement:            5.000ns  (sys_clk rise@5.000ns - sys_clk rise@0.000ns)
+  Data Path Delay:        4.618ns  (logic 1.335ns (28.909%)  route 3.283ns (71.091%))
+  Logic Levels:           17  (CARRY8=1 LUT2=2 LUT3=1 LUT4=3 LUT5=2 LUT6=8)
+  Clock Path Skew:        -0.145ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    2.927ns = ( 7.927 - 5.000 ) 
+    Source Clock Delay      (SCD):    3.355ns
+    Clock Pessimism Removal (CPR):    0.283ns
+  Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
+    Total System Jitter     (TSJ):    0.071ns
+    Total Input Jitter      (TIJ):    0.000ns
+    Discrete Jitter          (DJ):    0.000ns
+    Phase Error              (PE):    0.000ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock sys_clk rise edge)    0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk_IBUF_inst/I
+                         INBUF (Prop_INBUF_PAD_O)     0.582     0.582 r  clk_IBUF_inst/INBUF_INST/O
+                         net (fo=1, unplaced)         0.000     0.582    clk_IBUF_inst/OUT
+                         IBUFCTRL (Prop_IBUFCTRL_I_O)
+                                                      0.000     0.582 r  clk_IBUF_inst/IBUFCTRL_INST/O
+                         net (fo=1, unplaced)         0.161     0.743    clk_IBUF
+                         BUFGCE (Prop_BUFGCE_I_O)     0.028     0.771 r  clk_IBUF_BUFG_inst/O
+                         net (fo=8182, unplaced)      2.584     3.355    gemm_inst/clk_IBUF_BUFG
+                         FDCE                                         r  gemm_inst/g_y_quant[0].y_fp32_sum_normalize_fp16_mant_in_reg[14]/C
+  -------------------------------------------------------------------    -------------------
+                         FDCE (Prop_FDCE_C_Q)         0.078     3.433 f  gemm_inst/g_y_quant[0].y_fp32_sum_normalize_fp16_mant_in_reg[14]/Q
+                         net (fo=4, unplaced)         0.104     3.537    gemm_inst/g_y_quant[0].y_fp32_sum_normalize_fp16_mant_in[14]
+                         LUT4 (Prop_LUT4_I0_O)        0.100     3.637 f  gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[1].y_skew_reg[1][14]_srl2_gemm_inst_g_y_quant_c_13_i_24/O
+                         net (fo=1, unplaced)         0.141     3.778    gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[1].y_skew_reg[1][14]_srl2_gemm_inst_g_y_quant_c_13_i_24_n_0
+                         LUT4 (Prop_LUT4_I0_O)        0.100     3.878 f  gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[1].y_skew_reg[1][14]_srl2_gemm_inst_g_y_quant_c_13_i_10/O
+                         net (fo=37, unplaced)        0.249     4.127    gemm_inst/g_y_quant[0].y_fp32_sum_normalize_fp16_inst/p_1_out[4]
+                         LUT3 (Prop_LUT3_I1_O)        0.070     4.197 f  gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[1].y_skew_reg[1][15]_srl2_gemm_inst_g_y_quant_c_13_i_24/O
+                         net (fo=3, unplaced)         0.111     4.308    gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[1].y_skew_reg[1][15]_srl2_gemm_inst_g_y_quant_c_13_i_24_n_0
+                         LUT6 (Prop_LUT6_I0_O)        0.150     4.458 f  gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[1].y_skew_reg[1][15]_srl2_gemm_inst_g_y_quant_c_13_i_9/O
+                         net (fo=10, unplaced)        0.174     4.632    gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[1].y_skew_reg[1][15]_srl2_gemm_inst_g_y_quant_c_13_i_9_n_0
+                         LUT5 (Prop_LUT5_I1_O)        0.100     4.732 f  gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[1].y_skew_reg[1][15]_srl2_gemm_inst_g_y_quant_c_13_i_8/O
+                         net (fo=6, unplaced)         0.162     4.894    gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[1].y_skew_reg[1][15]_srl2_gemm_inst_g_y_quant_c_13_i_8_n_0
+                         LUT5 (Prop_LUT5_I0_O)        0.090     4.984 r  gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[1].y_skew_reg[1][14]_srl2_gemm_inst_g_y_quant_c_13_i_29/O
+                         net (fo=20, unplaced)        0.235     5.219    gemm_inst/g_y_quant[0].y_fp32_sum_normalize_fp16_inst/mant_shifted_4[25]
+                         LUT2 (Prop_LUT2_I1_O)        0.038     5.257 r  gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[1].y_skew_reg[1][14]_srl2_gemm_inst_g_y_quant_c_13_i_18/O
+                         net (fo=1, unplaced)         0.020     5.277    gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[1].y_skew_reg[1][14]_srl2_gemm_inst_g_y_quant_c_13_i_18_n_0
+                         CARRY8 (Prop_CARRY8_S[0]_O[2])
+                                                      0.134     5.411 f  gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[1].y_skew_reg[1][14]_srl2_gemm_inst_g_y_quant_c_13_i_6/O[2]
+                         net (fo=16, unplaced)        0.230     5.641    gemm_inst/g_y_quant[0].y_fp32_sum_normalize_fp16_inst/exp_normalized[2]
+                         LUT4 (Prop_LUT4_I0_O)        0.139     5.780 r  gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[1].y_skew_reg[1][9]_srl2_gemm_inst_g_y_quant_c_13_i_22/O
+                         net (fo=1, unplaced)         0.186     5.966    gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[1].y_skew_reg[1][9]_srl2_gemm_inst_g_y_quant_c_13_i_22_n_0
+                         LUT6 (Prop_LUT6_I5_O)        0.038     6.004 r  gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[1].y_skew_reg[1][9]_srl2_gemm_inst_g_y_quant_c_13_i_11/O
+                         net (fo=12, unplaced)        0.223     6.227    gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[1].y_skew_reg[1][9]_srl2_gemm_inst_g_y_quant_c_13_i_11_n_0
+                         LUT2 (Prop_LUT2_I0_O)        0.070     6.297 r  gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[1].y_skew_reg[1][4]_srl2_gemm_inst_g_y_quant_c_13_i_36/O
+                         net (fo=1, unplaced)         0.186     6.483    gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[1].y_skew_reg[1][4]_srl2_gemm_inst_g_y_quant_c_13_i_36_n_0
+                         LUT6 (Prop_LUT6_I0_O)        0.038     6.521 r  gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[1].y_skew_reg[1][4]_srl2_gemm_inst_g_y_quant_c_13_i_17/O
+                         net (fo=1, unplaced)         0.186     6.707    gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[1].y_skew_reg[1][4]_srl2_gemm_inst_g_y_quant_c_13_i_17_n_0
+                         LUT6 (Prop_LUT6_I3_O)        0.038     6.745 f  gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[1].y_skew_reg[1][4]_srl2_gemm_inst_g_y_quant_c_13_i_5/O
+                         net (fo=6, unplaced)         0.208     6.953    gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[1].y_skew_reg[1][4]_srl2_gemm_inst_g_y_quant_c_13_i_5_n_0
+                         LUT6 (Prop_LUT6_I2_O)        0.038     6.991 f  gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[1].y_skew_reg[1][9]_srl2_gemm_inst_g_y_quant_c_13_i_5/O
+                         net (fo=6, unplaced)         0.208     7.199    gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[1].y_skew_reg[1][9]_srl2_gemm_inst_g_y_quant_c_13_i_5_n_0
+                         LUT6 (Prop_LUT6_I2_O)        0.038     7.237 f  gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[1].y_skew_reg[1][14]_srl2_gemm_inst_g_y_quant_c_13_i_8/O
+                         net (fo=5, unplaced)         0.204     7.441    gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[1].y_skew_reg[1][14]_srl2_gemm_inst_g_y_quant_c_13_i_8_n_0
+                         LUT6 (Prop_LUT6_I4_O)        0.038     7.479 r  gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[1].y_skew_reg[1][14]_srl2_gemm_inst_g_y_quant_c_13_i_3/O
+                         net (fo=15, unplaced)        0.228     7.707    gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[1].y_skew_reg[1][14]_srl2_gemm_inst_g_y_quant_c_13_i_3_n_0
+                         LUT6 (Prop_LUT6_I4_O)        0.038     7.745 r  gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[1].y_skew_reg[1][0]_srl2_gemm_inst_g_y_quant_c_13_i_1/O
+                         net (fo=1, unplaced)         0.228     7.973    gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[1].y_skew_reg[1][0]_srl2_gemm_inst_g_y_quant_c_13_i_1_n_0
+                         SRL16E                                       r  gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[1].y_skew_reg[1][0]_srl2_gemm_inst_g_y_quant_c_13/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock sys_clk rise edge)    5.000     5.000 r  
+                                                      0.000     5.000 r  clk (IN)
+                         net (fo=0)                   0.000     5.000    clk_IBUF_inst/I
+                         INBUF (Prop_INBUF_PAD_O)     0.331     5.331 r  clk_IBUF_inst/INBUF_INST/O
+                         net (fo=1, unplaced)         0.000     5.331    clk_IBUF_inst/OUT
+                         IBUFCTRL (Prop_IBUFCTRL_I_O)
+                                                      0.000     5.331 r  clk_IBUF_inst/IBUFCTRL_INST/O
+                         net (fo=1, unplaced)         0.133     5.464    clk_IBUF
+                         BUFGCE (Prop_BUFGCE_I_O)     0.024     5.488 r  clk_IBUF_BUFG_inst/O
+                         net (fo=8182, unplaced)      2.439     7.927    gemm_inst/clk_IBUF_BUFG
+                         SRL16E                                       r  gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[1].y_skew_reg[1][0]_srl2_gemm_inst_g_y_quant_c_13/CLK
+                         clock pessimism              0.283     8.210    
+                         clock uncertainty           -0.035     8.174    
+                         SRL16E (Setup_SRL16E_CLK_D)
+                                                     -0.060     8.114    gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[1].y_skew_reg[1][0]_srl2_gemm_inst_g_y_quant_c_13
+  -------------------------------------------------------------------
+                         required time                          8.114    
+                         arrival time                          -7.973    
+  -------------------------------------------------------------------
+                         slack                                  0.142    
+
+
+
+
+
+Min Delay Paths
+--------------------------------------------------------------------------------------
+Slack (VIOLATED) :        -0.068ns  (arrival time - required time)
+  Source:                 gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[0].y_skew_reg[0][11]_gemm_inst_g_y_quant_c_14/C
+                            (rising edge-triggered cell FDRE clocked by sys_clk  {rise@0.000ns fall@2.500ns period=5.000ns})
+  Destination:            gemm_inst/g_y_quant[0].g_other_rows.y_data_reg[11]/D
+                            (rising edge-triggered cell FDCE clocked by sys_clk  {rise@0.000ns fall@2.500ns period=5.000ns})
+  Path Group:             sys_clk
+  Path Type:              Hold (Min at Fast Process Corner)
+  Requirement:            0.000ns  (sys_clk rise@0.000ns - sys_clk rise@0.000ns)
+  Data Path Delay:        0.123ns  (logic 0.061ns (49.593%)  route 0.062ns (50.406%))
+  Logic Levels:           1  (LUT2=1)
+  Clock Path Skew:        0.145ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    1.763ns
+    Source Clock Delay      (SCD):    1.413ns
+    Clock Pessimism Removal (CPR):    0.205ns
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         (clock sys_clk rise edge)    0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk_IBUF_inst/I
+                         INBUF (Prop_INBUF_PAD_O)     0.216     0.216 r  clk_IBUF_inst/INBUF_INST/O
+                         net (fo=1, unplaced)         0.000     0.216    clk_IBUF_inst/OUT
+                         IBUFCTRL (Prop_IBUFCTRL_I_O)
+                                                      0.000     0.216 r  clk_IBUF_inst/IBUFCTRL_INST/O
+                         net (fo=1, unplaced)         0.066     0.282    clk_IBUF
+                         BUFGCE (Prop_BUFGCE_I_O)     0.017     0.299 r  clk_IBUF_BUFG_inst/O
+                         net (fo=8182, unplaced)      1.114     1.413    gemm_inst/clk_IBUF_BUFG
+                         FDRE                                         r  gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[0].y_skew_reg[0][11]_gemm_inst_g_y_quant_c_14/C
+  -------------------------------------------------------------------    -------------------
+                         FDRE (Prop_FDRE_C_Q)         0.038     1.451 r  gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[0].y_skew_reg[0][11]_gemm_inst_g_y_quant_c_14/Q
+                         net (fo=1, unplaced)         0.046     1.497    gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[0].y_skew_reg[0][11]_gemm_inst_g_y_quant_c_14_n_0
+                         LUT2 (Prop_LUT2_I0_O)        0.023     1.520 r  gemm_inst/g_y_quant_gate__3/O
+                         net (fo=1, unplaced)         0.016     1.536    gemm_inst/g_y_quant_gate__3_n_0
+                         FDCE                                         r  gemm_inst/g_y_quant[0].g_other_rows.y_data_reg[11]/D
+  -------------------------------------------------------------------    -------------------
+
+                         (clock sys_clk rise edge)    0.000     0.000 r  
+                                                      0.000     0.000 r  clk (IN)
+                         net (fo=0)                   0.000     0.000    clk_IBUF_inst/I
+                         INBUF (Prop_INBUF_PAD_O)     0.402     0.402 r  clk_IBUF_inst/INBUF_INST/O
+                         net (fo=1, unplaced)         0.000     0.402    clk_IBUF_inst/OUT
+                         IBUFCTRL (Prop_IBUFCTRL_I_O)
+                                                      0.000     0.402 r  clk_IBUF_inst/IBUFCTRL_INST/O
+                         net (fo=1, unplaced)         0.083     0.485    clk_IBUF
+                         BUFGCE (Prop_BUFGCE_I_O)     0.019     0.504 r  clk_IBUF_BUFG_inst/O
+                         net (fo=8182, unplaced)      1.259     1.763    gemm_inst/clk_IBUF_BUFG
+                         FDCE                                         r  gemm_inst/g_y_quant[0].g_other_rows.y_data_reg[11]/C
+                         clock pessimism             -0.205     1.558    
+                         FDCE (Hold_FDCE_C_D)         0.046     1.604    gemm_inst/g_y_quant[0].g_other_rows.y_data_reg[11]
+  -------------------------------------------------------------------
+                         required time                         -1.604    
+                         arrival time                           1.536    
+  -------------------------------------------------------------------
+                         slack                                 -0.068    
+
+
+
+
+
+Pulse Width Checks
+--------------------------------------------------------------------------------------
+Clock Name:         sys_clk
+Waveform(ns):       { 0.000 2.500 }
+Period(ns):         5.000
+Sources:            { clk }
+
+Check Type        Corner  Lib Pin      Reference Pin  Required(ns)  Actual(ns)  Slack(ns)  Location  Pin
+Min Period        n/a     URAM288/CLK  n/a            2.000         5.000       3.000                sram_w_scale_a/mem_reg_uram_0/CLK
+Low Pulse Width   Slow    URAM288/CLK  n/a            0.700         2.500       1.800                sram_w_scale_a/mem_reg_uram_0/CLK
+High Pulse Width  Slow    URAM288/CLK  n/a            0.700         2.500       1.800                sram_w_scale_a/mem_reg_uram_0/CLK
+
+
+
