@@ -1,9 +1,6 @@
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 -------------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version     : Vivado v.2025.2 (lin64) Build 6299465 Fri Nov 14 12:34:56 MST 2025
-***
-***
-***
 | Design           : matmul_top
 | Device           : xcku3p-ffva676-2-e
 | Design State     : routed
@@ -30,10 +27,10 @@ Table of Contents
 ----------
 
 +--------------------------+--------------+
-| Total On-Chip Power (W)  | 0.747        |
+| Total On-Chip Power (W)  | 0.749        |
 | Design Power Budget (W)  | Unspecified* |
 | Power Budget Margin (W)  | NA           |
-| Dynamic (W)              | 0.291        |
+| Dynamic (W)              | 0.293        |
 | Device Static (W)        | 0.455        |
 | Effective TJA (C/W)      | 1.7          |
 | Max Ambient (C)          | 98.7         |
@@ -52,22 +49,21 @@ Table of Contents
 +-------------------------+-----------+----------+-----------+-----------------+
 | On-Chip                 | Power (W) | Used     | Available | Utilization (%) |
 +-------------------------+-----------+----------+-----------+-----------------+
-| Clocks                  |     0.066 |        3 |       --- |             --- |
-| CLB Logic               |     0.014 |    48272 |       --- |             --- |
-|   LUT as Logic          |     0.013 |    28575 |    162720 |           17.56 |
+| Clocks                  |     0.062 |        3 |       --- |             --- |
+| CLB Logic               |     0.016 |    49624 |       --- |             --- |
+|   LUT as Logic          |     0.015 |    29264 |    162720 |           17.98 |
 |   LUT as Shift Register |    <0.001 |      220 |     99840 |            0.22 |
-|   Register              |    <0.001 |    10251 |    325440 |            3.15 |
+|   Register              |    <0.001 |    10253 |    325440 |            3.15 |
 |   CARRY8                |    <0.001 |      438 |     27120 |            1.62 |
-|   BUFG                  |    <0.001 |        1 |        32 |            3.13 |
 |   Others                |     0.000 |      407 |       --- |             --- |
 |   F7/F8 Muxes           |     0.000 |      975 |    216960 |            0.45 |
-| Signals                 |     0.043 |    45112 |       --- |             --- |
+| Signals                 |     0.046 |    46259 |       --- |             --- |
 | Block RAM               |     0.090 |      274 |       360 |           76.11 |
 | URAM                    |     0.027 |        8 |        48 |           16.67 |
 | DSPs                    |     0.014 |       66 |      1368 |            4.82 |
 | I/O                     |     0.038 |      206 |       256 |           80.47 |
 | Static Power            |     0.455 |          |           |                 |
-| Total                   |     0.747 |          |           |                 |
+| Total                   |     0.749 |          |           |                 |
 +-------------------------+-----------+----------+-----------+-----------------+
 
 
@@ -77,7 +73,7 @@ Table of Contents
 +------------------+-------------+-----------+-------------+------------+-------------+-------------+------------+
 | Source           | Voltage (V) | Total (A) | Dynamic (A) | Static (A) | Powerup (A) | Budget (A)  | Margin (A) |
 +------------------+-------------+-----------+-------------+------------+-------------+-------------+------------+
-| Vccint           |       0.850 |     0.440 |       0.297 |      0.143 |       NA    | Unspecified | NA         |
+| Vccint           |       0.850 |     0.442 |       0.299 |      0.143 |       NA    | Unspecified | NA         |
 | Vccint_io        |       0.850 |     0.038 |       0.002 |      0.035 |       NA    | Unspecified | NA         |
 | Vccbram          |       0.850 |     0.004 |       0.001 |      0.002 |       NA    | Unspecified | NA         |
 | Vccaux           |       1.800 |     0.128 |       0.000 |      0.128 |       NA    | Unspecified | NA         |
@@ -149,9 +145,9 @@ Table of Contents
 +------------------------------------+-----------+
 | Name                               | Power (W) |
 +------------------------------------+-----------+
-| matmul_top                         |     0.291 |
-|   gemm_inst                        |     0.111 |
-|     systolic_array_inst            |     0.070 |
+| matmul_top                         |     0.293 |
+|   gemm_inst                        |     0.114 |
+|     systolic_array_inst            |     0.072 |
 |       g_pe_N[0].g_pe_M[0].pe_inst  |     0.001 |
 |       g_pe_N[0].g_pe_M[10].pe_inst |     0.001 |
 |       g_pe_N[0].g_pe_M[11].pe_inst |     0.001 |
@@ -183,10 +179,8 @@ Table of Contents
 |       g_pe_N[1].g_pe_M[8].pe_inst  |     0.001 |
 |       g_pe_N[1].g_pe_M[9].pe_inst  |     0.001 |
 |       g_pe_N[2].g_pe_M[0].pe_inst  |     0.001 |
-|       g_pe_N[2].g_pe_M[10].pe_inst |     0.001 |
 |       g_pe_N[2].g_pe_M[11].pe_inst |     0.001 |
 |       g_pe_N[2].g_pe_M[12].pe_inst |     0.001 |
-|       g_pe_N[2].g_pe_M[13].pe_inst |     0.001 |
 |       g_pe_N[2].g_pe_M[14].pe_inst |     0.001 |
 |       g_pe_N[2].g_pe_M[1].pe_inst  |     0.001 |
 |       g_pe_N[2].g_pe_M[2].pe_inst  |     0.001 |
@@ -197,6 +191,7 @@ Table of Contents
 |       g_pe_N[2].g_pe_M[7].pe_inst  |     0.001 |
 |       g_pe_N[2].g_pe_M[8].pe_inst  |     0.001 |
 |       g_pe_N[2].g_pe_M[9].pe_inst  |     0.001 |
+|       g_pe_N[3].g_pe_M[3].pe_inst  |     0.001 |
 |   sram_w_scale_a                   |     0.019 |
 |   sram_w_scale_b                   |     0.014 |
 |   sram_x                           |     0.018 |

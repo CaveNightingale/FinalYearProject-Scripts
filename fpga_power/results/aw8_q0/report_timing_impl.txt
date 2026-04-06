@@ -1,9 +1,6 @@
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 --------------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version      : Vivado v.2025.2 (lin64) Build 6299465 Fri Nov 14 12:34:56 MST 2025
-***
-***
-***
 | Design            : matmul_top
 | Device            : xcku3p-ffva676
 | Speed File        : -2  PRODUCTION 1.29 05-01-2022
@@ -139,7 +136,7 @@ Table of Contents
 
     WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints     WPWS(ns)     TPWS(ns)  TPWS Failing Endpoints  TPWS Total Endpoints  
     -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------     --------     --------  ----------------------  --------------------  
-      0.330        0.000                      0                26308        0.014        0.000                      0                26308        1.800        0.000                       0                  8198  
+      0.356        0.000                      0                26302        0.008        0.000                      0                26302        1.800        0.000                       0                  8195  
 
 
 All user specified timing constraints are met.
@@ -162,7 +159,7 @@ sys_clk  {0.000 2.500}        5.000           200.000
 
 Clock             WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints     WPWS(ns)     TPWS(ns)  TPWS Failing Endpoints  TPWS Total Endpoints  
 -----             -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------     --------     --------  ----------------------  --------------------  
-sys_clk             0.330        0.000                      0                26308        0.014        0.000                      0                26308        1.800        0.000                       0                  8198  
+sys_clk             0.356        0.000                      0                26302        0.008        0.000                      0                26302        1.800        0.000                       0                  8195  
 
 
 ------------------------------------------------------------------------------------------------
@@ -193,35 +190,35 @@ Path Group    From Clock    To Clock          WNS(ns)      TNS(ns)  TNS Failing 
 From Clock:  sys_clk
   To Clock:  sys_clk
 
-Setup :            0  Failing Endpoints,  Worst Slack        0.330ns,  Total Violation        0.000ns
-Hold  :            0  Failing Endpoints,  Worst Slack        0.014ns,  Total Violation        0.000ns
+Setup :            0  Failing Endpoints,  Worst Slack        0.356ns,  Total Violation        0.000ns
+Hold  :            0  Failing Endpoints,  Worst Slack        0.008ns,  Total Violation        0.000ns
 PW    :            0  Failing Endpoints,  Worst Slack        1.800ns,  Total Violation        0.000ns
 ---------------------------------------------------------------------------------------------------
 
 
 Max Delay Paths
 --------------------------------------------------------------------------------------
-Slack (MET) :             0.330ns  (required time - arrival time)
-  Source:                 gemm_inst/submit_n_reg[9]/C
+Slack (MET) :             0.356ns  (required time - arrival time)
+  Source:                 gemm_inst/submit_n_reg[8]/C
                             (rising edge-triggered cell FDCE clocked by sys_clk  {rise@0.000ns fall@2.500ns period=5.000ns})
-  Destination:            sram_y/mem_reg_bram_7/ENARDEN
+  Destination:            sram_y/mem_reg_bram_8/WEA[2]
                             (rising edge-triggered cell RAMB36E2 clocked by sys_clk  {rise@0.000ns fall@2.500ns period=5.000ns})
   Path Group:             sys_clk
   Path Type:              Setup (Max at Slow Process Corner)
   Requirement:            5.000ns  (sys_clk rise@5.000ns - sys_clk rise@0.000ns)
-  Data Path Delay:        4.320ns  (logic 1.771ns (41.000%)  route 2.549ns (59.000%))
-  Logic Levels:           8  (DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT6=2)
-  Clock Path Skew:        0.027ns (DCD - SCD + CPR)
-    Destination Clock Delay (DCD):    2.104ns = ( 7.104 - 5.000 ) 
-    Source Clock Delay      (SCD):    2.654ns
+  Data Path Delay:        4.228ns  (logic 1.813ns (42.883%)  route 2.415ns (57.117%))
+  Logic Levels:           8  (DSP_A_B_DATA=1 DSP_ALU=1 DSP_M_DATA=1 DSP_MULTIPLIER=1 DSP_OUTPUT=1 DSP_PREADD_DATA=1 LUT4=1 LUT6=1)
+  Clock Path Skew:        0.013ns (DCD - SCD + CPR)
+    Destination Clock Delay (DCD):    2.096ns = ( 7.096 - 5.000 ) 
+    Source Clock Delay      (SCD):    2.660ns
     Clock Pessimism Removal (CPR):    0.577ns
   Clock Uncertainty:      0.035ns  ((TSJ^2 + TIJ^2)^1/2 + DJ) / 2 + PE
     Total System Jitter     (TSJ):    0.071ns
     Total Input Jitter      (TIJ):    0.000ns
     Discrete Jitter          (DJ):    0.000ns
     Phase Error              (PE):    0.000ns
-  Clock Net Delay (Source):      1.392ns (routing 0.347ns, distribution 1.045ns)
-  Clock Net Delay (Destination): 1.388ns (routing 0.316ns, distribution 1.072ns)
+  Clock Net Delay (Source):      1.398ns (routing 0.347ns, distribution 1.051ns)
+  Clock Net Delay (Destination): 1.380ns (routing 0.316ns, distribution 1.064ns)
 
     Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
   -------------------------------------------------------------------    -------------------
@@ -236,37 +233,37 @@ Slack (MET) :             0.330ns  (required time - arrival time)
                          net (fo=1, routed)           0.204     1.234    clk_IBUF
     BUFGCE_HDIO_X0Y3     BUFGCE (Prop_BUFCE_BUFGCE_HDIO_I_O)
                                                       0.028     1.262 r  clk_IBUF_BUFG_inst/O
-    X1Y1 (CLOCK_ROOT)    net (fo=8197, routed)        1.392     2.654    gemm_inst/clk_IBUF_BUFG
-    SLICE_X52Y121        FDCE                                         r  gemm_inst/submit_n_reg[9]/C
+    X1Y1 (CLOCK_ROOT)    net (fo=8194, routed)        1.398     2.660    gemm_inst/clk_IBUF_BUFG
+    SLICE_X49Y125        FDCE                                         r  gemm_inst/submit_n_reg[8]/C
   -------------------------------------------------------------------    -------------------
-    SLICE_X52Y121        FDCE (Prop_BFF2_SLICEM_C_Q)
-                                                      0.080     2.734 f  gemm_inst/submit_n_reg[9]/Q
-                         net (fo=1, routed)           0.234     2.968    y_submit_addr_full/A[9]
-    DSP48E2_X8Y48        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_A[9]_A2_DATA[9])
-                                                      0.192     3.160 r  y_submit_addr_full/DSP_A_B_DATA_INST/A2_DATA[9]
-                         net (fo=1, routed)           0.000     3.160    y_submit_addr_full/DSP_A_B_DATA.A2_DATA<9>
-    DSP48E2_X8Y48        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_A2_DATA[9]_A2A1[9])
-                                                      0.076     3.236 r  y_submit_addr_full/DSP_PREADD_DATA_INST/A2A1[9]
-                         net (fo=1, routed)           0.000     3.236    y_submit_addr_full/DSP_PREADD_DATA.A2A1<9>
-    DSP48E2_X8Y48        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_A2A1[9]_U[14])
-                                                      0.505     3.741 f  y_submit_addr_full/DSP_MULTIPLIER_INST/U[14]
-                         net (fo=1, routed)           0.000     3.741    y_submit_addr_full/DSP_MULTIPLIER.U<14>
-    DSP48E2_X8Y48        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_U[14]_U_DATA[14])
-                                                      0.047     3.788 r  y_submit_addr_full/DSP_M_DATA_INST/U_DATA[14]
-                         net (fo=1, routed)           0.000     3.788    y_submit_addr_full/DSP_M_DATA.U_DATA<14>
-    DSP48E2_X8Y48        DSP_ALU (Prop_DSP_ALU_DSP48E2_U_DATA[14]_ALU_OUT[14])
-                                                      0.585     4.373 r  y_submit_addr_full/DSP_ALU_INST/ALU_OUT[14]
-                         net (fo=1, routed)           0.000     4.373    y_submit_addr_full/DSP_ALU.ALU_OUT<14>
-    DSP48E2_X8Y48        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[14]_P[14])
-                                                      0.109     4.482 f  y_submit_addr_full/DSP_OUTPUT_INST/P[14]
-                         net (fo=16, routed)          0.672     5.154    gemm_inst/P[14]
-    SLICE_X61Y103        LUT6 (Prop_A6LUT_SLICEM_I1_O)
-                                                      0.053     5.207 f  gemm_inst/mem_reg_bram_0_i_49/O
-                         net (fo=36, routed)          0.580     5.787    gemm_inst/mem_reg_bram_0_i_49_n_0
-    SLICE_X59Y81         LUT6 (Prop_H6LUT_SLICEL_I1_O)
-                                                      0.124     5.911 r  gemm_inst/mem_reg_bram_7_i_1/O
-                         net (fo=1, routed)           1.062     6.973    sram_y/mem_reg_bram_7_0
-    RAMB36_X7Y11         RAMB36E2                                     r  sram_y/mem_reg_bram_7/ENARDEN
+    SLICE_X49Y125        FDCE (Prop_AFF_SLICEM_C_Q)
+                                                      0.077     2.737 f  gemm_inst/submit_n_reg[8]/Q
+                         net (fo=1, routed)           0.250     2.987    y_submit_addr_full/A[8]
+    DSP48E2_X7Y50        DSP_A_B_DATA (Prop_DSP_A_B_DATA_DSP48E2_A[8]_A2_DATA[8])
+                                                      0.192     3.179 r  y_submit_addr_full/DSP_A_B_DATA_INST/A2_DATA[8]
+                         net (fo=1, routed)           0.000     3.179    y_submit_addr_full/DSP_A_B_DATA.A2_DATA<8>
+    DSP48E2_X7Y50        DSP_PREADD_DATA (Prop_DSP_PREADD_DATA_DSP48E2_A2_DATA[8]_A2A1[8])
+                                                      0.076     3.255 r  y_submit_addr_full/DSP_PREADD_DATA_INST/A2A1[8]
+                         net (fo=1, routed)           0.000     3.255    y_submit_addr_full/DSP_PREADD_DATA.A2A1<8>
+    DSP48E2_X7Y50        DSP_MULTIPLIER (Prop_DSP_MULTIPLIER_DSP48E2_A2A1[8]_U[10])
+                                                      0.505     3.760 f  y_submit_addr_full/DSP_MULTIPLIER_INST/U[10]
+                         net (fo=1, routed)           0.000     3.760    y_submit_addr_full/DSP_MULTIPLIER.U<10>
+    DSP48E2_X7Y50        DSP_M_DATA (Prop_DSP_M_DATA_DSP48E2_U[10]_U_DATA[10])
+                                                      0.047     3.807 r  y_submit_addr_full/DSP_M_DATA_INST/U_DATA[10]
+                         net (fo=1, routed)           0.000     3.807    y_submit_addr_full/DSP_M_DATA.U_DATA<10>
+    DSP48E2_X7Y50        DSP_ALU (Prop_DSP_ALU_DSP48E2_U_DATA[10]_ALU_OUT[10])
+                                                      0.585     4.392 r  y_submit_addr_full/DSP_ALU_INST/ALU_OUT[10]
+                         net (fo=1, routed)           0.000     4.392    y_submit_addr_full/DSP_ALU.ALU_OUT<10>
+    DSP48E2_X7Y50        DSP_OUTPUT (Prop_DSP_OUTPUT_DSP48E2_ALU_OUT[10]_P[10])
+                                                      0.109     4.501 f  y_submit_addr_full/DSP_OUTPUT_INST/P[10]
+                         net (fo=10, routed)          0.381     4.882    gemm_inst/P[10]
+    SLICE_X50Y120        LUT4 (Prop_G6LUT_SLICEM_I0_O)
+                                                      0.123     5.005 f  gemm_inst/mem_reg_bram_194_i_3/O
+                         net (fo=33, routed)          0.873     5.879    gemm_inst/y_submit_addr_full_95[10]
+    SLICE_X69Y75         LUT6 (Prop_H6LUT_SLICEL_I4_O)
+                                                      0.099     5.978 r  gemm_inst/mem_reg_bram_8_i_2__0/O
+                         net (fo=4, routed)           0.910     6.888    sram_y/mem_reg_bram_8_1[0]
+    RAMB36_X7Y8          RAMB36E2                                     r  sram_y/mem_reg_bram_8/WEA[2]
   -------------------------------------------------------------------    -------------------
 
                          (clock sys_clk rise edge)    5.000     5.000 r  
@@ -280,17 +277,17 @@ Slack (MET) :             0.330ns  (required time - arrival time)
                          net (fo=1, routed)           0.169     5.692    clk_IBUF
     BUFGCE_HDIO_X0Y3     BUFGCE (Prop_BUFCE_BUFGCE_HDIO_I_O)
                                                       0.024     5.716 r  clk_IBUF_BUFG_inst/O
-    X1Y1 (CLOCK_ROOT)    net (fo=8197, routed)        1.388     7.104    sram_y/clk_IBUF_BUFG
-    RAMB36_X7Y11         RAMB36E2                                     r  sram_y/mem_reg_bram_7/CLKARDCLK
-                         clock pessimism              0.577     7.681    
-                         clock uncertainty           -0.035     7.645    
-    RAMB36_X7Y11         RAMB36E2 (Setup_RAMB36E2_RAMB36_CLKARDCLK_ENARDEN)
-                                                     -0.342     7.303    sram_y/mem_reg_bram_7
+    X1Y1 (CLOCK_ROOT)    net (fo=8194, routed)        1.380     7.096    sram_y/clk_IBUF_BUFG
+    RAMB36_X7Y8          RAMB36E2                                     r  sram_y/mem_reg_bram_8/CLKARDCLK
+                         clock pessimism              0.577     7.673    
+                         clock uncertainty           -0.035     7.637    
+    RAMB36_X7Y8          RAMB36E2 (Setup_RAMB36E2_RAMB36_CLKARDCLK_WEA[2])
+                                                     -0.394     7.243    sram_y/mem_reg_bram_8
   -------------------------------------------------------------------
-                         required time                          7.303    
-                         arrival time                          -6.973    
+                         required time                          7.243    
+                         arrival time                          -6.888    
   -------------------------------------------------------------------
-                         slack                                  0.330    
+                         slack                                  0.356    
 
 
 
@@ -298,22 +295,22 @@ Slack (MET) :             0.330ns  (required time - arrival time)
 
 Min Delay Paths
 --------------------------------------------------------------------------------------
-Slack (MET) :             0.014ns  (arrival time - required time)
-  Source:                 gemm_inst/systolic_array_inst/g_pe_N[1].g_pe_M[0].pe_inst/normalize_exp_in_reg[6]/C
+Slack (MET) :             0.008ns  (arrival time - required time)
+  Source:                 gemm_inst/systolic_array_inst/g_pe_N[2].g_pe_M[4].pe_inst/a_out_reg[7]/C
                             (rising edge-triggered cell FDCE clocked by sys_clk  {rise@0.000ns fall@2.500ns period=5.000ns})
-  Destination:            gemm_inst/systolic_array_inst/g_pe_N[1].g_pe_M[0].pe_inst/sum_out_reg[29]/D
+  Destination:            gemm_inst/systolic_array_inst/g_pe_N[2].g_pe_M[5].pe_inst/a_out_reg[7]/D
                             (rising edge-triggered cell FDCE clocked by sys_clk  {rise@0.000ns fall@2.500ns period=5.000ns})
   Path Group:             sys_clk
   Path Type:              Hold (Min at Slow Process Corner)
   Requirement:            0.000ns  (sys_clk rise@0.000ns - sys_clk rise@0.000ns)
-  Data Path Delay:        0.190ns  (logic 0.081ns (42.650%)  route 0.109ns (57.350%))
-  Logic Levels:           1  (LUT6=1)
-  Clock Path Skew:        0.116ns (DCD - SCD - CPR)
-    Destination Clock Delay (DCD):    2.836ns
-    Source Clock Delay      (SCD):    2.084ns
-    Clock Pessimism Removal (CPR):    0.636ns
-  Clock Net Delay (Source):      1.369ns (routing 0.316ns, distribution 1.053ns)
-  Clock Net Delay (Destination): 1.574ns (routing 0.347ns, distribution 1.227ns)
+  Data Path Delay:        0.176ns  (logic 0.058ns (32.870%)  route 0.118ns (67.130%))
+  Logic Levels:           0  
+  Clock Path Skew:        0.106ns (DCD - SCD - CPR)
+    Destination Clock Delay (DCD):    2.718ns
+    Source Clock Delay      (SCD):    1.979ns
+    Clock Pessimism Removal (CPR):    0.632ns
+  Clock Net Delay (Source):      1.264ns (routing 0.316ns, distribution 0.948ns)
+  Clock Net Delay (Destination): 1.456ns (routing 0.347ns, distribution 1.109ns)
 
     Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
   -------------------------------------------------------------------    -------------------
@@ -328,16 +325,13 @@ Slack (MET) :             0.014ns  (arrival time - required time)
                          net (fo=1, routed)           0.169     0.692    clk_IBUF
     BUFGCE_HDIO_X0Y3     BUFGCE (Prop_BUFCE_BUFGCE_HDIO_I_O)
                                                       0.024     0.716 r  clk_IBUF_BUFG_inst/O
-    X1Y1 (CLOCK_ROOT)    net (fo=8197, routed)        1.369     2.084    gemm_inst/systolic_array_inst/g_pe_N[1].g_pe_M[0].pe_inst/clk_IBUF_BUFG
-    SLICE_X77Y130        FDCE                                         r  gemm_inst/systolic_array_inst/g_pe_N[1].g_pe_M[0].pe_inst/normalize_exp_in_reg[6]/C
+    X1Y1 (CLOCK_ROOT)    net (fo=8194, routed)        1.264     1.979    gemm_inst/systolic_array_inst/g_pe_N[2].g_pe_M[4].pe_inst/clk_IBUF_BUFG
+    SLICE_X63Y85         FDCE                                         r  gemm_inst/systolic_array_inst/g_pe_N[2].g_pe_M[4].pe_inst/a_out_reg[7]/C
   -------------------------------------------------------------------    -------------------
-    SLICE_X77Y130        FDCE (Prop_EFF_SLICEL_C_Q)
-                                                      0.059     2.143 r  gemm_inst/systolic_array_inst/g_pe_N[1].g_pe_M[0].pe_inst/normalize_exp_in_reg[6]/Q
-                         net (fo=5, routed)           0.079     2.222    gemm_inst/systolic_array_inst/g_pe_N[1].g_pe_M[0].pe_inst/normalize_exp_in[6]
-    SLICE_X75Y130        LUT6 (Prop_G6LUT_SLICEM_I2_O)
-                                                      0.022     2.244 r  gemm_inst/systolic_array_inst/g_pe_N[1].g_pe_M[0].pe_inst/sum_out[29]_i_1__57/O
-                         net (fo=1, routed)           0.030     2.274    gemm_inst/systolic_array_inst/g_pe_N[1].g_pe_M[0].pe_inst/normalize_fp32_out[29]
-    SLICE_X75Y130        FDCE                                         r  gemm_inst/systolic_array_inst/g_pe_N[1].g_pe_M[0].pe_inst/sum_out_reg[29]/D
+    SLICE_X63Y85         FDCE (Prop_FFF_SLICEL_C_Q)
+                                                      0.058     2.037 r  gemm_inst/systolic_array_inst/g_pe_N[2].g_pe_M[4].pe_inst/a_out_reg[7]/Q
+                         net (fo=6, routed)           0.118     2.156    gemm_inst/systolic_array_inst/g_pe_N[2].g_pe_M[5].pe_inst/a_out_reg[8]_1[7]
+    SLICE_X64Y87         FDCE                                         r  gemm_inst/systolic_array_inst/g_pe_N[2].g_pe_M[5].pe_inst/a_out_reg[7]/D
   -------------------------------------------------------------------    -------------------
 
                          (clock sys_clk rise edge)    0.000     0.000 r  
@@ -351,16 +345,16 @@ Slack (MET) :             0.014ns  (arrival time - required time)
                          net (fo=1, routed)           0.204     1.234    clk_IBUF
     BUFGCE_HDIO_X0Y3     BUFGCE (Prop_BUFCE_BUFGCE_HDIO_I_O)
                                                       0.028     1.262 r  clk_IBUF_BUFG_inst/O
-    X1Y1 (CLOCK_ROOT)    net (fo=8197, routed)        1.574     2.836    gemm_inst/systolic_array_inst/g_pe_N[1].g_pe_M[0].pe_inst/clk_IBUF_BUFG
-    SLICE_X75Y130        FDCE                                         r  gemm_inst/systolic_array_inst/g_pe_N[1].g_pe_M[0].pe_inst/sum_out_reg[29]/C
-                         clock pessimism             -0.636     2.200    
-    SLICE_X75Y130        FDCE (Hold_GFF_SLICEM_C_D)
-                                                      0.060     2.260    gemm_inst/systolic_array_inst/g_pe_N[1].g_pe_M[0].pe_inst/sum_out_reg[29]
+    X1Y1 (CLOCK_ROOT)    net (fo=8194, routed)        1.456     2.718    gemm_inst/systolic_array_inst/g_pe_N[2].g_pe_M[5].pe_inst/clk_IBUF_BUFG
+    SLICE_X64Y87         FDCE                                         r  gemm_inst/systolic_array_inst/g_pe_N[2].g_pe_M[5].pe_inst/a_out_reg[7]/C
+                         clock pessimism             -0.632     2.085    
+    SLICE_X64Y87         FDCE (Hold_EFF2_SLICEL_C_D)
+                                                      0.062     2.147    gemm_inst/systolic_array_inst/g_pe_N[2].g_pe_M[5].pe_inst/a_out_reg[7]
   -------------------------------------------------------------------
-                         required time                         -2.260    
-                         arrival time                           2.274    
+                         required time                         -2.147    
+                         arrival time                           2.156    
   -------------------------------------------------------------------
-                         slack                                  0.014    
+                         slack                                  0.008    
 
 
 
@@ -374,9 +368,9 @@ Period(ns):         5.000
 Sources:            { clk }
 
 Check Type        Corner  Lib Pin      Reference Pin  Required(ns)  Actual(ns)  Slack(ns)  Location       Pin
-Min Period        n/a     URAM288/CLK  n/a            2.000         5.000       3.000      URAM288_X0Y36  sram_w_scale_a/mem_reg_uram_0/CLK
-Low Pulse Width   Slow    URAM288/CLK  n/a            0.700         2.500       1.800      URAM288_X0Y36  sram_w_scale_a/mem_reg_uram_0/CLK
-High Pulse Width  Slow    URAM288/CLK  n/a            0.700         2.500       1.800      URAM288_X0Y36  sram_w_scale_a/mem_reg_uram_0/CLK
+Min Period        n/a     URAM288/CLK  n/a            2.000         5.000       3.000      URAM288_X0Y12  sram_w_scale_a/mem_reg_uram_0/CLK
+Low Pulse Width   Slow    URAM288/CLK  n/a            0.700         2.500       1.800      URAM288_X0Y12  sram_w_scale_a/mem_reg_uram_0/CLK
+High Pulse Width  Slow    URAM288/CLK  n/a            0.700         2.500       1.800      URAM288_X0Y12  sram_w_scale_a/mem_reg_uram_0/CLK
 
 
 

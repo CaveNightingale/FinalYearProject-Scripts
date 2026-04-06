@@ -1,9 +1,6 @@
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 ---------------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version      : Vivado v.2025.2 (lin64) Build 6299465 Fri Nov 14 12:34:56 MST 2025
-***
-***
-***
 | Design            : matmul_top
 | Device            : xcku3p-ffva676
 | Speed File        : -2  PRODUCTION 1.29 05-01-2022
@@ -139,7 +136,7 @@ Table of Contents
 
     WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints     WPWS(ns)     TPWS(ns)  TPWS Failing Endpoints  TPWS Total Endpoints  
     -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------     --------     --------  ----------------------  --------------------  
-      0.142        0.000                      0                31522       -0.068     -178.412                   4345                31522        1.800        0.000                       0                  9336  
+      0.142        0.000                      0                31522       -0.068     -168.019                   4205                31522        1.800        0.000                       0                  9336  
 
 
 Timing constraints are not met.
@@ -162,7 +159,7 @@ sys_clk  {0.000 2.500}        5.000           200.000
 
 Clock             WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints     WPWS(ns)     TPWS(ns)  TPWS Failing Endpoints  TPWS Total Endpoints  
 -----             -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------     --------     --------  ----------------------  --------------------  
-sys_clk             0.142        0.000                      0                31522       -0.068     -178.412                   4345                31522        1.800        0.000                       0                  9336  
+sys_clk             0.142        0.000                      0                31522       -0.068     -168.019                   4205                31522        1.800        0.000                       0                  9336  
 
 
 ------------------------------------------------------------------------------------------------
@@ -194,7 +191,7 @@ From Clock:  sys_clk
   To Clock:  sys_clk
 
 Setup :            0  Failing Endpoints,  Worst Slack        0.142ns,  Total Violation        0.000ns
-Hold  :         4345  Failing Endpoints,  Worst Slack       -0.068ns,  Total Violation     -178.412ns
+Hold  :         4205  Failing Endpoints,  Worst Slack       -0.068ns,  Total Violation     -168.019ns
 PW    :            0  Failing Endpoints,  Worst Slack        1.800ns,  Total Violation        0.000ns
 ---------------------------------------------------------------------------------------------------
 

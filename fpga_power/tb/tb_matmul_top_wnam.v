@@ -179,7 +179,7 @@ module tb_matmul_top_wnam;
       .done(done)
   );
 
-  always #5 clk = ~clk;
+  always #2.5 clk = ~clk;
 
   always @(posedge clk or negedge rst) begin
     if (!rst) begin

@@ -12,6 +12,7 @@ module systolic_array #(
     input wire rst,
     input wire en,
     input wire clear,
+    input wire [2:0] width,
     input wire [N*(ActivationWidth+1)-1:0] a,  // Flattened N x 1 vector
     input wire [M*(ActivationWidth+1)-1:0] b,  // Flattened 1 x M vector
     output wire [N*M*32-1:0] c  // Flattened N x M matrix
@@ -34,7 +35,7 @@ module systolic_array #(
             .en(en),
             .clear_in(clear_wires[i][j]),
             .a_in(a_wires[i][j]),
-            .b_in(b_wires[i][j]),
+            .b_in(width > i ? b_wires[i][j] : 0), // data gating for columns beyond the width
             .clear_out(clear_wires[i][j+1]),
             .a_out(a_wires[i][j+1]),
             .b_out(b_wires[i+1][j]),

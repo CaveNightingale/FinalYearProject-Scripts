@@ -75,6 +75,7 @@ module gemm #(
     output reg submit_en,  // Indicates when the output y_data is valid and can be written to memory
     output reg done  // Indicates the completion of the matrix multiplication
 );
+  wire [2:0] tile_width = batch_size > N ? N : batch_size;
   // Weight dequant, targeting same format as activations
   reg [ActivationWidth:0] w_dequant_ext[0:M-1];
   genvar i, j;
@@ -413,6 +414,7 @@ module gemm #(
       .rst(rst),
       .en(en && query_cycle == 0),  // Enable the systolic array only when the first row is ready
       .clear(clear || current_k == 0),
+      .width(tile_width),
       .a(current_k >= in_features ? 0 : x_flat),
       .b(current_k >= in_features ? 0 : w_flat),
       .c(y_fp32_ftz)

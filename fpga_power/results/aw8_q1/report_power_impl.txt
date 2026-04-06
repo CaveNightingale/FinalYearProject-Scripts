@@ -1,9 +1,6 @@
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 -------------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version     : Vivado v.2025.2 (lin64) Build 6299465 Fri Nov 14 12:34:56 MST 2025
-***
-***
-***
 | Design           : matmul_top
 | Device           : xcku3p-ffva676-2-e
 | Design State     : routed
@@ -30,7 +27,7 @@ Table of Contents
 ----------
 
 +--------------------------+--------------+
-| Total On-Chip Power (W)  | 0.706        |
+| Total On-Chip Power (W)  | 0.707        |
 | Design Power Budget (W)  | Unspecified* |
 | Power Budget Margin (W)  | NA           |
 | Dynamic (W)              | 0.252        |
@@ -52,22 +49,22 @@ Table of Contents
 +--------------------------+-----------+----------+-----------+-----------------+
 | On-Chip                  | Power (W) | Used     | Available | Utilization (%) |
 +--------------------------+-----------+----------+-----------+-----------------+
-| Clocks                   |     0.059 |        3 |       --- |             --- |
-| CLB Logic                |     0.017 |    45735 |       --- |             --- |
-|   LUT as Logic           |     0.015 |    27911 |    162720 |           17.15 |
+| Clocks                   |     0.058 |        3 |       --- |             --- |
+| CLB Logic                |     0.019 |    46495 |       --- |             --- |
+|   LUT as Logic           |     0.016 |    28337 |    162720 |           17.41 |
 |   LUT as Distributed RAM |     0.002 |      384 |     99840 |            0.38 |
 |   LUT as Shift Register  |    <0.001 |      124 |     99840 |            0.12 |
-|   Register               |    <0.001 |     8453 |    325440 |            2.60 |
+|   Register               |    <0.001 |     8455 |    325440 |            2.60 |
 |   CARRY8                 |    <0.001 |      441 |     27120 |            1.63 |
 |   Others                 |     0.000 |      166 |       --- |             --- |
 |   F7/F8 Muxes            |     0.000 |      975 |    216960 |            0.45 |
-| Signals                  |     0.042 |    41246 |       --- |             --- |
+| Signals                  |     0.042 |    41835 |       --- |             --- |
 | Block RAM                |     0.083 |      253 |       360 |           70.28 |
 | URAM                     |     0.006 |        4 |        48 |            8.33 |
 | DSPs                     |    <0.001 |        2 |      1368 |            0.15 |
 | I/O                      |     0.043 |      194 |       256 |           75.78 |
 | Static Power             |     0.455 |          |           |                 |
-| Total                    |     0.706 |          |           |                 |
+| Total                    |     0.707 |          |           |                 |
 +--------------------------+-----------+----------+-----------+-----------------+
 
 
@@ -155,8 +152,8 @@ Table of Contents
 |   g_quant_sram.sram_w_zero_a  |     0.002 |
 |   g_quant_sram.sram_w_zero_b  |     0.002 |
 |   gemm_inst                   |     0.088 |
-|     systolic_array_inst       |     0.046 |
-|   sram_w_scale_a              |     0.005 |
+|     systolic_array_inst       |     0.047 |
+|   sram_w_scale_a              |     0.004 |
 |   sram_w_scale_b              |     0.004 |
 |   sram_x                      |     0.010 |
 |   sram_y                      |     0.079 |

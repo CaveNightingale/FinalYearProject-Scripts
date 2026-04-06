@@ -76,6 +76,7 @@ module tb_systolic_array;
       .rst  (rst),
       .en   (en),
       .clear(clear),
+      .width(3'd4),  // Use width=4 to enable all PEs
       .a    (a_ext),
       .b    (b_ext),
       .c    (c)

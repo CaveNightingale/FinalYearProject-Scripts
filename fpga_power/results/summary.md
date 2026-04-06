@@ -32,29 +32,29 @@ We generate 8 random test cases, one for each combination of weight and activati
 - There are two modes for running the test cases: batched or unbatched. In the batched mode, the batch size B is 24 (i.e. using entire input file), and in the unbatched mode, the batch size B is 1 (i.e. using the first column of the input activation and the full input weight).
 
 ## Power Results
-We run the design on Vivado's simulator with the generated test cases, and collect the power reports. Here we present the power results. The staic power is 0.456 W.
+We run the design on Vivado's simulator with the generated test cases, and collect the power reports. Here we present the power results. The static power is around 0.46 W.
 
 ### Compute Unit Total Dynamic Power
 Power estimated by Vivado 2025.2 on xcku3p-ffva676-2-e, with a clock frequency of 200 MHz (default setting in Vivado).
 
 |  | e5m10 (batched) | e4m3 (batched) | e5m10 (unbatched) | e4m3 (unbatched) |
 | --- | --- | --- | --- | --- |
-| e2m1 | 0.996 | 0.723 | 0.558 | 0.400 |
-| int4 | 1.013 | 0.738 | 0.581 | 0.413 |
-| e4m3 | 1.021 | 0.726 | 0.601 | 0.408 |
-| int8 | 1.044 | N/A | 0.624 | N/A |
-| e5m10 | 0.995 | N/A | 0.594 | N/A |
+| e2m1 | 1.552 | 1.143 | 0.722 | 0.534 |
+| int4 | 1.589 | 1.173 | 0.756 | 0.555 |
+| e4m3 | 1.587 | 1.156 | 0.782 | 0.539 |
+| int8 | 1.635 | N/A | 0.823 | N/A |
+| e5m10 | 1.577 | N/A | 0.784 | N/A |
 
-Summary: The total dynamic power is mostly affected by the activation data type. And the 16-bit activation (e5m10) consumes around 1.4x more dynamic power than the 8-bit activation (e4m3).
+Summary: The total dynamic power is mostly affected by the activation data type. Across matched weight formats, the 16-bit activation (e5m10) consumes around 1.37x more dynamic power than the 8-bit activation (e4m3).
 
 ### Gemm Unit Dynamic Power
 |  | e5m10 (batched) | e4m3 (batched) | e5m10 (unbatched) | e4m3 (unbatched) |
 | --- | --- | --- | --- | --- |
-| e2m1 | 0.790 | 0.572 | 0.334 | 0.232 |
-| int4 | 0.806 | 0.588 | 0.356 | 0.244 |
-| e4m3 | 0.809 | 0.586 | 0.354 | 0.240 |
-| int8 | 0.830 | N/A | 0.371 | N/A |
-| e5m10 | 0.812 | N/A | 0.351 | N/A |
+| e2m1 | 1.332 | 0.985 | 0.472 | 0.348 |
+| int4 | 1.370 | 1.015 | 0.506 | 0.368 |
+| e4m3 | 1.359 | 1.011 | 0.495 | 0.353 |
+| int8 | 1.401 | N/A | 0.522 | N/A |
+| e5m10 | 1.372 | N/A | 0.485 | N/A |
 
 Summary: Same pattern as the total dynamic power.
 
@@ -69,9 +69,8 @@ Using DDR4-2400, the DRAM dynamic power is estimated to be 0.083 W/GB/s. Static 
 | int8 | 0.046 | N/A | 0.279 | N/A |
 | e5m10 | 0.089 | N/A | 0.532 | N/A |
 
-Summary: The DRAM dynamic power is mostly affected by the weight data type, which determines the DRAM bandwidth. The 16-bit weight (e5m10) consumes around 2x more DRAM dynamic power than the 8-bit weight (int8 or e4m3), and around 3.7x more DRAM dynamic power than the 4-bit weight (e2m1 or int4).
+Summary: The DRAM dynamic power is mostly affected by the weight data type, which determines the DRAM bandwidth. The 16-bit weight (e5m10) consumes around 1.9x more DRAM dynamic power than the 8-bit weight (int8 or e4m3), and around 3.8x more DRAM dynamic power than the 4-bit weight (e2m1 or int4).
 
 ## Limitations
 - This design is not fully pipelined and optimized for higher frequency, which may significantly reduce the time required for the computation.
 - The power results are estimated by Vivado's simulator, which may not be accurate. The actual power consumption may be different when the design is implemented on the FPGA.
-- The design does not have any gating or clock enable signal, so even the idle PEs consume dynamic power, which may overestimate the dynamic power in unbatched mode.

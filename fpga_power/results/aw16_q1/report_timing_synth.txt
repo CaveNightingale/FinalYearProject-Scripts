@@ -1,9 +1,6 @@
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version      : Vivado v.2025.2 (lin64) Build 6299465 Fri Nov 14 12:34:56 MST 2025
-***
-***
-***
 | Design            : matmul_top
 | Device            : xcku3p-ffva676
 | Speed File        : -2  PRODUCTION 1.29 05-01-2022
@@ -139,7 +136,7 @@ Table of Contents
 
     WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints     WPWS(ns)     TPWS(ns)  TPWS Failing Endpoints  TPWS Total Endpoints  
     -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------     --------     --------  ----------------------  --------------------  
-     -1.151     -264.091                    256                37961       -0.068     -239.921                   5384                37961        1.800        0.000                       0                 12046  
+     -1.151     -264.091                    256                37965       -0.068     -231.008                   5376                37965        1.800        0.000                       0                 12048  
 
 
 Timing constraints are not met.
@@ -162,7 +159,7 @@ sys_clk  {0.000 2.500}        5.000           200.000
 
 Clock             WNS(ns)      TNS(ns)  TNS Failing Endpoints  TNS Total Endpoints      WHS(ns)      THS(ns)  THS Failing Endpoints  THS Total Endpoints     WPWS(ns)     TPWS(ns)  TPWS Failing Endpoints  TPWS Total Endpoints  
 -----             -------      -------  ---------------------  -------------------      -------      -------  ---------------------  -------------------     --------     --------  ----------------------  --------------------  
-sys_clk            -1.151     -264.091                    256                37961       -0.068     -239.921                   5384                37961        1.800        0.000                       0                 12046  
+sys_clk            -1.151     -264.091                    256                37965       -0.068     -231.008                   5376                37965        1.800        0.000                       0                 12048  
 
 
 ------------------------------------------------------------------------------------------------
@@ -194,7 +191,7 @@ From Clock:  sys_clk
   To Clock:  sys_clk
 
 Setup :          256  Failing Endpoints,  Worst Slack       -1.151ns,  Total Violation     -264.091ns
-Hold  :         5384  Failing Endpoints,  Worst Slack       -0.068ns,  Total Violation     -239.921ns
+Hold  :         5376  Failing Endpoints,  Worst Slack       -0.068ns,  Total Violation     -231.008ns
 PW    :            0  Failing Endpoints,  Worst Slack        1.800ns,  Total Violation        0.000ns
 ---------------------------------------------------------------------------------------------------
 
@@ -232,7 +229,7 @@ Slack (VIOLATED) :        -1.151ns  (required time - arrival time)
                                                       0.000     0.582 r  clk_IBUF_inst/IBUFCTRL_INST/O
                          net (fo=1, unplaced)         0.161     0.743    clk_IBUF
                          BUFGCE (Prop_BUFGCE_I_O)     0.028     0.771 r  clk_IBUF_BUFG_inst/O
-                         net (fo=12045, unplaced)     2.584     3.355    clk_IBUF_BUFG
+                         net (fo=12047, unplaced)     2.584     3.355    clk_IBUF_BUFG
                          FDRE                                         r  gemm_w_zero_half_r_reg[0]/C
   -------------------------------------------------------------------    -------------------
                          FDRE (Prop_FDRE_C_Q)         0.078     3.433 r  gemm_w_zero_half_r_reg[0]/Q
@@ -300,7 +297,7 @@ Slack (VIOLATED) :        -1.151ns  (required time - arrival time)
                                                       0.000     5.331 r  clk_IBUF_inst/IBUFCTRL_INST/O
                          net (fo=1, unplaced)         0.133     5.464    clk_IBUF
                          BUFGCE (Prop_BUFGCE_I_O)     0.024     5.488 r  clk_IBUF_BUFG_inst/O
-                         net (fo=12045, unplaced)     2.439     7.927    gemm_inst/clk_IBUF_BUFG
+                         net (fo=12047, unplaced)     2.439     7.927    gemm_inst/clk_IBUF_BUFG
                          FDCE                                         r  gemm_inst/g_w_dequant[0].g_w_dequant_fp16.w_dequant_ext_reg[0][12]/C
                          clock pessimism              0.283     8.210    
                          clock uncertainty           -0.035     8.174    
@@ -343,7 +340,7 @@ Slack (VIOLATED) :        -0.068ns  (arrival time - required time)
                                                       0.000     0.216 r  clk_IBUF_inst/IBUFCTRL_INST/O
                          net (fo=1, unplaced)         0.066     0.282    clk_IBUF
                          BUFGCE (Prop_BUFGCE_I_O)     0.017     0.299 r  clk_IBUF_BUFG_inst/O
-                         net (fo=12045, unplaced)     1.114     1.413    gemm_inst/clk_IBUF_BUFG
+                         net (fo=12047, unplaced)     1.114     1.413    gemm_inst/clk_IBUF_BUFG
                          FDRE                                         r  gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[0].y_skew_reg[0][11]_gemm_inst_g_y_quant_c_14/C
   -------------------------------------------------------------------    -------------------
                          FDRE (Prop_FDRE_C_Q)         0.038     1.451 r  gemm_inst/g_y_quant[0].g_other_rows.g_skew_y[0].y_skew_reg[0][11]_gemm_inst_g_y_quant_c_14/Q
@@ -362,7 +359,7 @@ Slack (VIOLATED) :        -0.068ns  (arrival time - required time)
                                                       0.000     0.402 r  clk_IBUF_inst/IBUFCTRL_INST/O
                          net (fo=1, unplaced)         0.083     0.485    clk_IBUF
                          BUFGCE (Prop_BUFGCE_I_O)     0.019     0.504 r  clk_IBUF_BUFG_inst/O
-                         net (fo=12045, unplaced)     1.259     1.763    gemm_inst/clk_IBUF_BUFG
+                         net (fo=12047, unplaced)     1.259     1.763    gemm_inst/clk_IBUF_BUFG
                          FDCE                                         r  gemm_inst/g_y_quant[0].g_other_rows.y_data_reg[11]/C
                          clock pessimism             -0.205     1.558    
                          FDCE (Hold_FDCE_C_D)         0.046     1.604    gemm_inst/g_y_quant[0].g_other_rows.y_data_reg[11]

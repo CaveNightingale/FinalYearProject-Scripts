@@ -1,9 +1,6 @@
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 -------------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version     : Vivado v.2025.2 (lin64) Build 6299465 Fri Nov 14 12:34:56 MST 2025
-***
-***
-***
 | Design           : matmul_top
 | Device           : xcku3p-ffva676-2-e
 | Design State     : synthesized
@@ -30,10 +27,10 @@ Table of Contents
 ----------
 
 +--------------------------+--------------+
-| Total On-Chip Power (W)  | 0.667        |
+| Total On-Chip Power (W)  | 0.669        |
 | Design Power Budget (W)  | Unspecified* |
 | Power Budget Margin (W)  | NA           |
-| Dynamic (W)              | 0.213        |
+| Dynamic (W)              | 0.215        |
 | Device Static (W)        | 0.454        |
 | Effective TJA (C/W)      | 1.7          |
 | Max Ambient (C)          | 98.8         |
@@ -53,21 +50,21 @@ Table of Contents
 | On-Chip                  | Power (W) | Used     | Available | Utilization (%) |
 +--------------------------+-----------+----------+-----------+-----------------+
 | Clocks                   |     0.043 |        3 |       --- |             --- |
-| CLB Logic                |     0.018 |    45733 |       --- |             --- |
-|   LUT as Logic           |     0.014 |    29250 |    162720 |           17.98 |
+| CLB Logic                |     0.020 |    46496 |       --- |             --- |
+|   LUT as Logic           |     0.016 |    29706 |    162720 |           18.26 |
 |   LUT as Distributed RAM |     0.003 |      512 |     99840 |            0.51 |
 |   LUT as Shift Register  |    <0.001 |      124 |     99840 |            0.12 |
 |   Register               |    <0.001 |     8441 |    325440 |            2.59 |
 |   CARRY8                 |    <0.001 |      444 |     27120 |            1.64 |
 |   Others                 |     0.000 |      166 |       --- |             --- |
 |   F7/F8 Muxes            |     0.000 |      975 |    216960 |            0.45 |
-| Signals                  |     0.017 |    45524 |       --- |             --- |
+| Signals                  |     0.018 |    46196 |       --- |             --- |
 | Block RAM                |     0.083 |      253 |       360 |           70.28 |
 | URAM                     |     0.006 |        4 |        48 |            8.33 |
 | DSPs                     |    <0.001 |        2 |      1368 |            0.15 |
 | I/O                      |     0.044 |      194 |       256 |           75.78 |
 | Static Power             |     0.454 |          |           |                 |
-| Total                    |     0.667 |          |           |                 |
+| Total                    |     0.669 |          |           |                 |
 +--------------------------+-----------+----------+-----------+-----------------+
 
 
@@ -77,7 +74,7 @@ Table of Contents
 +------------------+-------------+-----------+-------------+------------+-------------+-------------+------------+
 | Source           | Voltage (V) | Total (A) | Dynamic (A) | Static (A) | Powerup (A) | Budget (A)  | Margin (A) |
 +------------------+-------------+-----------+-------------+------------+-------------+-------------+------------+
-| Vccint           |       0.850 |     0.339 |       0.197 |      0.142 |       NA    | Unspecified | NA         |
+| Vccint           |       0.850 |     0.342 |       0.200 |      0.142 |       NA    | Unspecified | NA         |
 | Vccint_io        |       0.850 |     0.038 |       0.002 |      0.035 |       NA    | Unspecified | NA         |
 | Vccbram          |       0.850 |     0.003 |       0.001 |      0.002 |       NA    | Unspecified | NA         |
 | Vccaux           |       1.800 |     0.128 |       0.000 |      0.128 |       NA    | Unspecified | NA         |
@@ -149,13 +146,13 @@ Table of Contents
 +-------------------------------+-----------+
 | Name                          | Power (W) |
 +-------------------------------+-----------+
-| matmul_top                    |     0.213 |
+| matmul_top                    |     0.215 |
 |   g_quant_sram.sram_w_quant_a |     0.004 |
 |   g_quant_sram.sram_w_quant_b |     0.004 |
 |   g_quant_sram.sram_w_zero_a  |     0.002 |
 |   g_quant_sram.sram_w_zero_b  |     0.002 |
-|   gemm_inst                   |     0.057 |
-|     systolic_array_inst       |     0.034 |
+|   gemm_inst                   |     0.059 |
+|     systolic_array_inst       |     0.037 |
 |   sram_w_scale_a              |     0.005 |
 |   sram_w_scale_b              |     0.004 |
 |   sram_x                      |     0.010 |

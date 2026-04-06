@@ -1,9 +1,6 @@
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 ---------------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version     : Vivado v.2025.2 (lin64) Build 6299465 Fri Nov 14 12:34:56 MST 2025
-***
-***
-***
 | Design           : matmul_top
 | Device           : xcku3p-ffva676-2-e
 | Design State     : routed
@@ -30,18 +27,18 @@ Table of Contents
 ----------
 
 +--------------------------+------------------------------------------------+
-| Total On-Chip Power (W)  | 1.052                                          |
+| Total On-Chip Power (W)  | 1.243                                          |
 | Design Power Budget (W)  | Unspecified*                                   |
 | Power Budget Margin (W)  | NA                                             |
-| Dynamic (W)              | 0.594                                          |
-| Device Static (W)        | 0.458                                          |
+| Dynamic (W)              | 0.784                                          |
+| Device Static (W)        | 0.459                                          |
 | Effective TJA (C/W)      | 1.7                                            |
-| Max Ambient (C)          | 98.2                                           |
-| Junction Temperature (C) | 26.8                                           |
+| Max Ambient (C)          | 97.9                                           |
+| Junction Temperature (C) | 27.1                                           |
 | Confidence Level         | High                                           |
 | Setting File             | ---                                            |
 | Simulation Activity File | /tmp/tb_matmul_top_we5m10ae5m10_unbatched.saif |
-| Design Nets Matched      | 58%   (34714/59377)                            |
+| Design Nets Matched      | 59%   (35765/60713)                            |
 +--------------------------+------------------------------------------------+
 * Specify Design Power Budget using, set_operating_conditions -design_power_budget <value in Watts>
 
@@ -52,22 +49,21 @@ Table of Contents
 +-------------------------+-----------+----------+-----------+-----------------+
 | On-Chip                 | Power (W) | Used     | Available | Utilization (%) |
 +-------------------------+-----------+----------+-----------+-----------------+
-| Clocks                  |     0.115 |        3 |       --- |             --- |
-| CLB Logic               |     0.115 |    48272 |       --- |             --- |
-|   LUT as Logic          |     0.105 |    28575 |    162720 |           17.56 |
-|   LUT as Shift Register |     0.004 |      220 |     99840 |            0.22 |
-|   Register              |     0.004 |    10251 |    325440 |            3.15 |
-|   CARRY8                |     0.001 |      438 |     27120 |            1.62 |
-|   BUFG                  |    <0.001 |        1 |        32 |            3.13 |
+| Clocks                  |     0.113 |        3 |       --- |             --- |
+| CLB Logic               |     0.200 |    49624 |       --- |             --- |
+|   LUT as Logic          |     0.183 |    29264 |    162720 |           17.98 |
+|   LUT as Shift Register |     0.009 |      220 |     99840 |            0.22 |
+|   Register              |     0.007 |    10253 |    325440 |            3.15 |
+|   CARRY8                |     0.002 |      438 |     27120 |            1.62 |
 |   Others                |     0.000 |      407 |       --- |             --- |
 |   F7/F8 Muxes           |     0.000 |      975 |    216960 |            0.45 |
-| Signals                 |     0.136 |    45112 |       --- |             --- |
+| Signals                 |     0.237 |    46259 |       --- |             --- |
 | Block RAM               |     0.091 |      274 |       360 |           76.11 |
-| URAM                    |     0.076 |        8 |        48 |           16.67 |
+| URAM                    |     0.077 |        8 |        48 |           16.67 |
 | DSPs                    |     0.041 |       66 |      1368 |            4.82 |
-| I/O                     |     0.021 |      206 |       256 |           80.47 |
-| Static Power            |     0.458 |          |           |                 |
-| Total                   |     1.052 |          |           |                 |
+| I/O                     |     0.026 |      206 |       256 |           80.47 |
+| Static Power            |     0.459 |          |           |                 |
+| Total                   |     1.243 |          |           |                 |
 +-------------------------+-----------+----------+-----------+-----------------+
 
 
@@ -77,14 +73,14 @@ Table of Contents
 +------------------+-------------+-----------+-------------+------------+-------------+-------------+------------+
 | Source           | Voltage (V) | Total (A) | Dynamic (A) | Static (A) | Powerup (A) | Budget (A)  | Margin (A) |
 +------------------+-------------+-----------+-------------+------------+-------------+-------------+------------+
-| Vccint           |       0.850 |     0.819 |       0.673 |      0.146 |       NA    | Unspecified | NA         |
-| Vccint_io        |       0.850 |     0.039 |       0.004 |      0.035 |       NA    | Unspecified | NA         |
+| Vccint           |       0.850 |     1.038 |       0.890 |      0.148 |       NA    | Unspecified | NA         |
+| Vccint_io        |       0.850 |     0.043 |       0.008 |      0.036 |       NA    | Unspecified | NA         |
 | Vccbram          |       0.850 |     0.004 |       0.002 |      0.002 |       NA    | Unspecified | NA         |
 | Vccaux           |       1.800 |     0.128 |       0.000 |      0.128 |       NA    | Unspecified | NA         |
 | Vccaux_io        |       1.800 |     0.040 |       0.008 |      0.031 |       NA    | Unspecified | NA         |
 | Vcco33           |       3.300 |     0.000 |       0.000 |      0.000 |       NA    | Unspecified | NA         |
 | Vcco25           |       2.500 |     0.000 |       0.000 |      0.000 |       NA    | Unspecified | NA         |
-| Vcco18           |       1.800 |     0.001 |       0.001 |      0.000 |       NA    | Unspecified | NA         |
+| Vcco18           |       1.800 |     0.002 |       0.002 |      0.000 |       NA    | Unspecified | NA         |
 | Vcco15           |       1.500 |     0.000 |       0.000 |      0.000 |       NA    | Unspecified | NA         |
 | Vcco135          |       1.350 |     0.000 |       0.000 |      0.000 |       NA    | Unspecified | NA         |
 | Vcco12           |       1.200 |     0.000 |       0.000 |      0.000 |       NA    | Unspecified | NA         |
@@ -149,50 +145,50 @@ Table of Contents
 +------------------------------------+-----------+
 | Name                               | Power (W) |
 +------------------------------------+-----------+
-| matmul_top                         |     0.594 |
-|   gemm_inst                        |     0.351 |
-|     systolic_array_inst            |     0.314 |
-|       g_pe_N[0].g_pe_M[0].pe_inst  |     0.013 |
-|       g_pe_N[0].g_pe_M[10].pe_inst |     0.011 |
-|       g_pe_N[0].g_pe_M[11].pe_inst |     0.011 |
-|       g_pe_N[0].g_pe_M[12].pe_inst |     0.011 |
-|       g_pe_N[0].g_pe_M[13].pe_inst |     0.011 |
-|       g_pe_N[0].g_pe_M[14].pe_inst |     0.011 |
-|       g_pe_N[0].g_pe_M[15].pe_inst |     0.011 |
-|       g_pe_N[0].g_pe_M[1].pe_inst  |     0.012 |
-|       g_pe_N[0].g_pe_M[2].pe_inst  |     0.020 |
-|       g_pe_N[0].g_pe_M[3].pe_inst  |     0.012 |
-|       g_pe_N[0].g_pe_M[4].pe_inst  |     0.011 |
-|       g_pe_N[0].g_pe_M[5].pe_inst  |     0.011 |
-|       g_pe_N[0].g_pe_M[6].pe_inst  |     0.011 |
-|       g_pe_N[0].g_pe_M[7].pe_inst  |     0.011 |
-|       g_pe_N[0].g_pe_M[8].pe_inst  |     0.011 |
-|       g_pe_N[0].g_pe_M[9].pe_inst  |     0.011 |
-|       g_pe_N[1].g_pe_M[0].pe_inst  |     0.003 |
+| matmul_top                         |     0.784 |
+|   gemm_inst                        |     0.485 |
+|     systolic_array_inst            |     0.424 |
+|       g_pe_N[0].g_pe_M[0].pe_inst  |     0.021 |
+|       g_pe_N[0].g_pe_M[10].pe_inst |     0.018 |
+|       g_pe_N[0].g_pe_M[11].pe_inst |     0.019 |
+|       g_pe_N[0].g_pe_M[12].pe_inst |     0.019 |
+|       g_pe_N[0].g_pe_M[13].pe_inst |     0.019 |
+|       g_pe_N[0].g_pe_M[14].pe_inst |     0.019 |
+|       g_pe_N[0].g_pe_M[15].pe_inst |     0.018 |
+|       g_pe_N[0].g_pe_M[1].pe_inst  |     0.021 |
+|       g_pe_N[0].g_pe_M[2].pe_inst  |     0.033 |
+|       g_pe_N[0].g_pe_M[3].pe_inst  |     0.021 |
+|       g_pe_N[0].g_pe_M[4].pe_inst  |     0.019 |
+|       g_pe_N[0].g_pe_M[5].pe_inst  |     0.018 |
+|       g_pe_N[0].g_pe_M[6].pe_inst  |     0.019 |
+|       g_pe_N[0].g_pe_M[7].pe_inst  |     0.019 |
+|       g_pe_N[0].g_pe_M[8].pe_inst  |     0.018 |
+|       g_pe_N[0].g_pe_M[9].pe_inst  |     0.018 |
+|       g_pe_N[1].g_pe_M[0].pe_inst  |     0.002 |
 |       g_pe_N[1].g_pe_M[10].pe_inst |     0.002 |
 |       g_pe_N[1].g_pe_M[11].pe_inst |     0.002 |
 |       g_pe_N[1].g_pe_M[12].pe_inst |     0.002 |
 |       g_pe_N[1].g_pe_M[13].pe_inst |     0.002 |
 |       g_pe_N[1].g_pe_M[14].pe_inst |     0.002 |
-|       g_pe_N[1].g_pe_M[15].pe_inst |     0.002 |
-|       g_pe_N[1].g_pe_M[1].pe_inst  |     0.003 |
-|       g_pe_N[1].g_pe_M[2].pe_inst  |     0.003 |
-|       g_pe_N[1].g_pe_M[3].pe_inst  |     0.003 |
+|       g_pe_N[1].g_pe_M[15].pe_inst |     0.001 |
+|       g_pe_N[1].g_pe_M[1].pe_inst  |     0.002 |
+|       g_pe_N[1].g_pe_M[2].pe_inst  |     0.002 |
+|       g_pe_N[1].g_pe_M[3].pe_inst  |     0.002 |
 |       g_pe_N[1].g_pe_M[4].pe_inst  |     0.002 |
 |       g_pe_N[1].g_pe_M[5].pe_inst  |     0.002 |
 |       g_pe_N[1].g_pe_M[6].pe_inst  |     0.002 |
 |       g_pe_N[1].g_pe_M[7].pe_inst  |     0.002 |
 |       g_pe_N[1].g_pe_M[8].pe_inst  |     0.002 |
 |       g_pe_N[1].g_pe_M[9].pe_inst  |     0.002 |
-|       g_pe_N[2].g_pe_M[0].pe_inst  |     0.003 |
+|       g_pe_N[2].g_pe_M[0].pe_inst  |     0.002 |
 |       g_pe_N[2].g_pe_M[10].pe_inst |     0.002 |
 |       g_pe_N[2].g_pe_M[11].pe_inst |     0.002 |
 |       g_pe_N[2].g_pe_M[12].pe_inst |     0.002 |
 |       g_pe_N[2].g_pe_M[13].pe_inst |     0.002 |
 |       g_pe_N[2].g_pe_M[14].pe_inst |     0.002 |
-|       g_pe_N[2].g_pe_M[15].pe_inst |     0.002 |
+|       g_pe_N[2].g_pe_M[15].pe_inst |     0.001 |
 |       g_pe_N[2].g_pe_M[1].pe_inst  |     0.002 |
-|       g_pe_N[2].g_pe_M[2].pe_inst  |     0.003 |
+|       g_pe_N[2].g_pe_M[2].pe_inst  |     0.002 |
 |       g_pe_N[2].g_pe_M[3].pe_inst  |     0.002 |
 |       g_pe_N[2].g_pe_M[4].pe_inst  |     0.002 |
 |       g_pe_N[2].g_pe_M[5].pe_inst  |     0.002 |
@@ -201,12 +197,12 @@ Table of Contents
 |       g_pe_N[2].g_pe_M[8].pe_inst  |     0.002 |
 |       g_pe_N[2].g_pe_M[9].pe_inst  |     0.002 |
 |       g_pe_N[3].g_pe_M[0].pe_inst  |     0.002 |
-|       g_pe_N[3].g_pe_M[10].pe_inst |     0.002 |
-|       g_pe_N[3].g_pe_M[11].pe_inst |     0.002 |
-|       g_pe_N[3].g_pe_M[12].pe_inst |     0.002 |
-|       g_pe_N[3].g_pe_M[13].pe_inst |     0.002 |
-|       g_pe_N[3].g_pe_M[14].pe_inst |     0.002 |
-|       g_pe_N[3].g_pe_M[15].pe_inst |     0.002 |
+|       g_pe_N[3].g_pe_M[10].pe_inst |     0.001 |
+|       g_pe_N[3].g_pe_M[11].pe_inst |     0.001 |
+|       g_pe_N[3].g_pe_M[12].pe_inst |     0.001 |
+|       g_pe_N[3].g_pe_M[13].pe_inst |     0.001 |
+|       g_pe_N[3].g_pe_M[14].pe_inst |     0.001 |
+|       g_pe_N[3].g_pe_M[15].pe_inst |     0.001 |
 |       g_pe_N[3].g_pe_M[1].pe_inst  |     0.002 |
 |       g_pe_N[3].g_pe_M[2].pe_inst  |     0.002 |
 |       g_pe_N[3].g_pe_M[3].pe_inst  |     0.002 |
@@ -214,10 +210,10 @@ Table of Contents
 |       g_pe_N[3].g_pe_M[5].pe_inst  |     0.002 |
 |       g_pe_N[3].g_pe_M[6].pe_inst  |     0.002 |
 |       g_pe_N[3].g_pe_M[7].pe_inst  |     0.002 |
-|       g_pe_N[3].g_pe_M[8].pe_inst  |     0.002 |
-|       g_pe_N[3].g_pe_M[9].pe_inst  |     0.002 |
-|   sram_w_scale_a                   |     0.045 |
-|   sram_w_scale_b                   |     0.046 |
+|       g_pe_N[3].g_pe_M[8].pe_inst  |     0.001 |
+|       g_pe_N[3].g_pe_M[9].pe_inst  |     0.001 |
+|   sram_w_scale_a                   |     0.052 |
+|   sram_w_scale_b                   |     0.053 |
 |   sram_x                           |     0.022 |
 |   sram_y                           |     0.072 |
 +------------------------------------+-----------+

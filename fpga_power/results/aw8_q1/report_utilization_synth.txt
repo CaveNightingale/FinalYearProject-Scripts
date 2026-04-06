@@ -1,9 +1,6 @@
 Copyright 1986-2022 Xilinx, Inc. All Rights Reserved. Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 ------------------------------------------------------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2025.2 (lin64) Build 6299465 Fri Nov 14 12:34:56 MST 2025
-***
-***
-***
 | Design       : matmul_top
 | Device       : xcku3p-ffva676-2-e
 | Speed File   : -2
@@ -32,8 +29,8 @@ Table of Contents
 +----------------------------+-------+-------+------------+-----------+-------+
 |          Site Type         |  Used | Fixed | Prohibited | Available | Util% |
 +----------------------------+-------+-------+------------+-----------+-------+
-| CLB LUTs*                  | 29886 |     0 |          0 |    162720 | 18.37 |
-|   LUT as Logic             | 29250 |     0 |          0 |    162720 | 17.98 |
+| CLB LUTs*                  | 30342 |     0 |          0 |    162720 | 18.65 |
+|   LUT as Logic             | 29706 |     0 |          0 |    162720 | 18.26 |
 |   LUT as Memory            |   636 |     0 |          0 |     99840 |  0.64 |
 |     LUT as Distributed RAM |   512 |     0 |            |           |       |
 |     LUT as Shift Register  |   124 |     0 |            |           |       |
@@ -174,12 +171,12 @@ Warning! For any ECO changes, please run place_design if there are unplaced inst
 +----------+-------+---------------------+
 | Ref Name |  Used | Functional Category |
 +----------+-------+---------------------+
-| LUT6     | 17197 |                 CLB |
+| LUT6     | 17320 |                 CLB |
 | FDCE     |  7387 |            Register |
-| LUT3     |  6324 |                 CLB |
-| LUT5     |  4428 |                 CLB |
-| LUT4     |  3752 |                 CLB |
-| LUT2     |  3363 |                 CLB |
+| LUT3     |  6435 |                 CLB |
+| LUT5     |  4441 |                 CLB |
+| LUT2     |  3821 |                 CLB |
+| LUT4     |  3810 |                 CLB |
 | FDRE     |  1051 |            Register |
 | MUXF7    |   719 |                 CLB |
 | CARRY8   |   444 |                 CLB |
