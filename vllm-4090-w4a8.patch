@@ -1,0 +1,321 @@
+diff --git a/vllm/model_executor/layers/quantization/compressed_tensors/compressed_tensors.py b/vllm/model_executor/layers/quantization/compressed_tensors/compressed_tensors.py
+index 00a17596a..91bddbd29 100644
+--- a/vllm/model_executor/layers/quantization/compressed_tensors/compressed_tensors.py
++++ b/vllm/model_executor/layers/quantization/compressed_tensors/compressed_tensors.py
+@@ -51,6 +51,7 @@ from vllm.model_executor.layers.quantization.compressed_tensors.schemes import (
+     CompressedTensorsW8A8Int8,
+     CompressedTensorsW8A16Fp8,
+     CompressedTensorsWNA16,
++    PackedW4A8,
+ )
+ from vllm.model_executor.layers.quantization.compressed_tensors.transform.linear import (  # noqa: E501
+     CompressedTensorsLinearTransformMethod,
+@@ -524,6 +525,26 @@ class CompressedTensorsConfig(QuantizationConfig):
+             90, error=False, match_exact=True
+         ) and cls._is_fp8_w4a8(weight_quant, input_quant)
+ 
++    @classmethod
++    def _is_fp8_w4a8_sm89(
++        cls, weight_quant: QuantizationArgs, input_quant: QuantizationArgs
++    ) -> bool:
++        if not weight_quant or not input_quant:
++            return False
++        if not cls._check_scheme_supported(
++            89, error=False, match_exact=True
++        ):
++            return False
++        if weight_quant.num_bits != 4 or weight_quant.type != QuantizationType.INT.value or \
++            weight_quant.strategy != QuantizationStrategy.GROUP.value or \
++                weight_quant.group_size not in [32, 64, 128] or weight_quant.dynamic or \
++        (weight_quant.actorder and weight_quant.actorder != 'static'):
++            return False
++        if input_quant.num_bits != 8 or input_quant.type != QuantizationType.FLOAT.value or \
++                input_quant.strategy != QuantizationStrategy.TOKEN.value or not input_quant.dynamic:
++            return False
++        return True
++
+     @classmethod
+     def _is_fp8_w8a8_sm90(
+         cls, weight_quant: QuantizationArgs, input_quant: QuantizationArgs
+@@ -596,6 +617,14 @@ class CompressedTensorsConfig(QuantizationConfig):
+         if self._is_mxfp4(weight_quant):
+             return CompressedTensorsW4A16Mxfp4()
+ 
++        if self._is_fp8_w4a8_sm89(weight_quant, input_quant):
++            return PackedW4A8(
++                num_bits=weight_quant.num_bits,
++                strategy=weight_quant.strategy,
++                symmetric=weight_quant.symmetric,
++                group_size=weight_quant.group_size,
++            )
++
+         if self._is_fp8_w4a8_sm90(weight_quant, input_quant):
+             return CompressedTensorsW4A8Fp8(
+                 num_bits=weight_quant.num_bits,
+diff --git a/vllm/model_executor/layers/quantization/compressed_tensors/schemes/__init__.py b/vllm/model_executor/layers/quantization/compressed_tensors/schemes/__init__.py
+index c9dd98dfd..c056752e1 100644
+--- a/vllm/model_executor/layers/quantization/compressed_tensors/schemes/__init__.py
++++ b/vllm/model_executor/layers/quantization/compressed_tensors/schemes/__init__.py
+@@ -15,6 +15,8 @@ from .compressed_tensors_wNa16 import WNA16_SUPPORTED_BITS, CompressedTensorsWNA
+ # This avoids circular import error
+ from .compressed_tensors_24 import CompressedTensors24  # isort: skip
+ 
++from .packed_w4a8 import PackedW4A8
++
+ __all__ = [
+     "CompressedTensorsScheme",
+     "CompressedTensorsWNA16",
+@@ -28,4 +30,5 @@ __all__ = [
+     "CompressedTensorsW4A4Fp4",
+     "CompressedTensorsW4A8Int",
+     "CompressedTensorsW4A8Fp8",
++    "PackedW4A8",
+ ]
+diff --git a/vllm/model_executor/layers/quantization/compressed_tensors/schemes/packed_w4a8.py b/vllm/model_executor/layers/quantization/compressed_tensors/schemes/packed_w4a8.py
+new file mode 100644
+index 000000000..12cd863cb
+--- /dev/null
++++ b/vllm/model_executor/layers/quantization/compressed_tensors/schemes/packed_w4a8.py
+@@ -0,0 +1,228 @@
++from typing import Callable
++
++from vllm.model_executor.layers.quantization.compressed_tensors.schemes import (
++    CompressedTensorsScheme,
++)
++from vllm.model_executor.layers.quantization.utils.marlin_utils import (
++    marlin_permute_scales,
++    marlin_make_empty_g_idx,
++    marlin_make_workspace_new,
++    marlin_zero_points,
++    marlin_quant_input,
++)
++from vllm.model_executor.layers.quantization.utils.quant_utils import unpack_cols
++from vllm.model_executor.parameter import (
++    BasevLLMParameter,
++    ChannelQuantScaleParameter,
++    GroupQuantScaleParameter,
++    PackedvLLMParameter,
++    permute_param_layout_,
++)
++from vllm.scalar_type import scalar_types
++from vllm import _custom_ops as ops
++import torch
++import torch.nn as nn
++
++
++class PackedW4A8(CompressedTensorsScheme):
++    def __init__(
++        self,
++        strategy: str,
++        num_bits: int,
++        group_size: int | None = None,
++        symmetric: bool | None = True,
++    ):
++        assert num_bits == 4, "Only 4 bits quantization is supported for weights in PackedW4A8 scheme."
++        assert strategy == "group", "Only group quantization is supported for weights in PackedW4A8 scheme."
++        assert group_size in [
++            32, 64, 128], "Group size must be one of [32, 64, 128] for PackedW4A8 scheme."
++        self.pack_factor = 32 // num_bits
++        self.strategy = strategy
++        self.symmetric = symmetric
++        self.group_size = group_size
++        self.quant_type = scalar_types.uint4b8 if symmetric else scalar_types.uint4
++
++    @classmethod
++    def get_min_capability(cls) -> int:
++        return 89
++
++    def create_weights(
++        self,
++        layer: torch.nn.Module,
++        output_size: int,
++        input_size: int,
++        output_partition_sizes: list[int],
++        input_size_per_partition: int,
++        params_dtype: torch.dtype,
++        weight_loader: Callable,
++        **kwargs,
++    ):
++        output_size_per_partition = sum(output_partition_sizes)
++
++        group_size = self.group_size
++
++        scales_and_zp_size = input_size // group_size
++
++        assert input_size_per_partition % group_size == 0
++        scales_and_zp_size = input_size_per_partition // group_size
++
++        weight = PackedvLLMParameter(
++            input_dim=1,
++            output_dim=0,
++            packed_dim=1,
++            weight_loader=weight_loader,
++            packed_factor=self.pack_factor,
++            data=torch.empty(
++                output_size_per_partition,
++                input_size_per_partition // self.pack_factor,
++                dtype=torch.int32,
++            ),
++        )
++
++        weight_scale = GroupQuantScaleParameter(
++            output_dim=0, input_dim=1, weight_loader=weight_loader, data=torch.empty(
++                output_size_per_partition,
++                scales_and_zp_size,
++                dtype=params_dtype,
++            )
++        )
++
++        weight_zero_point = PackedvLLMParameter(
++            input_dim=1,
++            output_dim=0,
++            packed_dim=0,
++            weight_loader=weight_loader,
++            packed_factor=self.pack_factor,
++            data=torch.empty(
++                output_size_per_partition // self.pack_factor,
++                scales_and_zp_size,
++                dtype=torch.int32,
++            ),
++        )
++
++        # A 2D array defining the original shape of the weights
++        # before packing
++        weight_shape = BasevLLMParameter(
++            data=torch.empty(2, dtype=torch.int64), weight_loader=weight_loader
++        )
++
++        layer.register_parameter("weight_packed", weight)
++        layer.register_parameter("weight_scale", weight_scale)
++        layer.register_parameter("weight_shape", weight_shape)
++        if not self.symmetric:
++            layer.register_parameter("weight_zero_point", weight_zero_point)
++        self.output_size_per_partition = output_size_per_partition
++        self.input_size_per_partition = input_size_per_partition
++
++    @staticmethod
++    def _unpack(matrix): # Unpack the 4-bit quantized weights into int32 format for processing. 
++        matrix = matrix[:, None, :]
++        stacks = [(matrix >> i) & 0xF for i in range(0, 32, 4)]
++        return torch.cat(stacks, dim=1).reshape(-1, matrix.shape[2])
++    
++    @staticmethod
++    def _pack(matrix): # Pack the int32 weights back into 4-bit format after processing.
++        packed = torch.zeros(
++            (matrix.shape[0] // 8, matrix.shape[1]), dtype=torch.int32, device=matrix.device
++        )
++        for i in range(8):
++            packed |= (matrix[i::8] & 0xF) << (i * 4)
++        return packed
++
++    @staticmethod
++    def _process_int4_fp8_quant(quants, zeros):
++        quants = PackedW4A8._unpack(quants)
++        if zeros.shape[0] != 0:
++            zeros = zeros.repeat_interleave(quants.shape[0] // zeros.shape[0], dim=0)
++        else:
++            zeros = torch.tensor(8, device=quants.device)
++        results = torch.where(quants >= zeros, quants - zeros, 15 - quants)
++        return PackedW4A8._pack(results)
++
++    def process_weights_after_loading(self, layer):
++        if hasattr(layer, "bias") and layer.bias is not None and (layer.bias != 0).any():
++            raise ValueError("Non-zero bias is not supported for PackedW4A8 scheme.")
++
++        device = layer.weight_packed.data.device
++
++        weight_packed = permute_param_layout_(
++            layer.weight_packed, input_dim=0, output_dim=1, packed_dim=0)
++        weight_scale = permute_param_layout_(
++            layer.weight_scale, input_dim=0, output_dim=1)
++        if not self.symmetric:
++            weight_zero_point = unpack_cols(
++                layer.weight_zero_point.data.t(),
++                4,
++                (self.input_size_per_partition // self.group_size),
++                self.output_size_per_partition,
++            )
++        else:
++            weight_zero_point = marlin_make_empty_g_idx(device)
++
++        weight_packed.data = self._process_int4_fp8_quant(
++            weight_packed.data, weight_zero_point.data)
++        weight_scale.data = weight_scale.data * 512
++
++        weight_g_idx = marlin_make_empty_g_idx(device)
++
++        weight_packed.data = ops.gptq_marlin_repack(
++            weight_packed.data.contiguous(),
++            perm=weight_g_idx.data,
++            size_k=self.input_size_per_partition,
++            size_n=self.output_size_per_partition,
++            num_bits=4,
++            is_a_8bit=True,
++        )
++        weight_scale.data = marlin_permute_scales(
++            weight_scale.data.contiguous(),
++            size_k=self.input_size_per_partition,
++            size_n=self.output_size_per_partition,
++            group_size=self.group_size,
++            is_a_8bit=True
++        )
++        if not self.symmetric:
++            weight_zero_point.data = marlin_zero_points(
++                weight_zero_point.data,
++                size_k=self.input_size_per_partition // self.group_size,
++                size_n=self.output_size_per_partition,
++                num_bits=4,
++                is_a_8bit=True,
++            )
++
++        layer.weight_packed = nn.Parameter(
++            weight_packed.data, requires_grad=False)
++        layer.weight_scale = nn.Parameter(
++            weight_scale.data, requires_grad=False)
++        layer.weight_zero_point = nn.Parameter(
++            weight_zero_point.data, requires_grad=False)
++        layer.weight_g_idx = marlin_make_empty_g_idx(device)
++        layer.g_idx_sort_indices = marlin_make_empty_g_idx(device)
++        layer.workspace = marlin_make_workspace_new(device)
++
++    def apply_weights(self, layer, x, bias):
++        reshaped_x = x.reshape(-1, x.shape[-1])
++        out_shape = (reshaped_x.shape[0], self.output_size_per_partition)
++
++        reshaped_x, a_scales = marlin_quant_input(reshaped_x, torch.float8_e4m3fn)
++
++        output = ops.marlin_gemm(
++            a=reshaped_x,
++            c=None,
++            b_q_weight=layer.weight_packed,
++            b_bias=bias,
++            b_scales=layer.weight_scale,
++            a_scales=a_scales,
++            global_scale=None,
++            b_zeros=layer.weight_zero_point,
++            g_idx=layer.weight_g_idx,
++            perm=layer.g_idx_sort_indices,
++            workspace=layer.workspace,
++            b_q_type=self.quant_type,
++            size_m=reshaped_x.shape[0],
++            size_n=self.output_size_per_partition,
++            size_k=self.input_size_per_partition,
++            use_atomic_add=False,
++            is_zp_float=False,
++        )
++
++        return output.reshape(out_shape)
+\ No newline at end of file
+diff --git a/vllm/model_executor/models/llama.py b/vllm/model_executor/models/llama.py
+index 16d3cf88a..f2bfd8507 100644
+--- a/vllm/model_executor/models/llama.py
++++ b/vllm/model_executor/models/llama.py
+@@ -394,6 +394,8 @@ class LlamaModel(nn.Module):
+         self.make_empty_intermediate_tensors = make_empty_intermediate_tensors_factory(
+             ["hidden_states", "residual"], config.hidden_size
+         )
++        from vllm.model_executor.layers.quantization.utils.marlin_utils import get__quant_fp8_method
++        get__quant_fp8_method()
+ 
+     def embed_input_ids(self, input_ids: torch.Tensor) -> torch.Tensor:
+         return self.embed_tokens(input_ids)
