@@ -5,6 +5,10 @@ import re
 import numpy as np
 
 
+FLOAT_TYPE_PATTERN = re.compile(r"e(\d+)m(\d+)$")
+INT_TYPE_PATTERN = re.compile(r"int(\d+)$")
+
+
 BASELINE_WORD_PPL = 18.0785
 BASELINE_LOG_PPL = math.log(BASELINE_WORD_PPL)
 LINEAR_WEIGHT_ELEMENTS = 6476005376
@@ -13,14 +17,6 @@ NUM_HIDDEN_LAYERS = 32
 HIDDEN_SIZE = 4096
 KV_ELEMENTS_PER_TOKEN = 2 * HIDDEN_SIZE * NUM_HIDDEN_LAYERS
 MONTE_CARLO_SAMPLES = 1 << 18
-
-TYPE_BITS = {
-    "e2m1": 4,
-    "int4": 4,
-    "e4m3": 8,
-    "int8": 8,
-    "e5m10": 16,
-}
 
 WEIGHT_K = {
     ("GPTQ", "integer", False): 3.50776,
@@ -149,7 +145,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--output-length", type=int, required=True)
     parser.add_argument("--model-length", type=int, default=4096)
     parser.add_argument("--algo", choices=["RTN", "AWQ", "GPTQ"], default="RTN")
-    parser.add_argument("--type", choices=["e2m1", "int4", "e4m3", "int8", "e5m10"], default="e5m10")
+    parser.add_argument("--type", default="e5m10")
     parser.add_argument("--group-size", type=int, default=64)
     parser.add_argument("--symmetric", action="store_true")
     parser.add_argument("--kv-fp8", action="store_true")
@@ -157,13 +153,29 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def is_float_type(type_name: str) -> bool:
+    return FLOAT_TYPE_PATTERN.fullmatch(type_name) is not None
+
+
+def is_int_type(type_name: str) -> bool:
+    return INT_TYPE_PATTERN.fullmatch(type_name) is not None
+
+
 def type_bitwidth(type_name: str) -> int:
-    return TYPE_BITS[type_name]
+    int_match = INT_TYPE_PATTERN.fullmatch(type_name)
+    if int_match is not None:
+        return int(int_match.group(1))
+
+    float_match = FLOAT_TYPE_PATTERN.fullmatch(type_name)
+    if float_match is not None:
+        exponent_bits = int(float_match.group(1))
+        mantissa_bits = int(float_match.group(2))
+        return 1 + exponent_bits + mantissa_bits
+
+    raise ValueError(f"Unsupported quantization type: {type_name}")
 
 
 def effective_group_size(type_name: str, group_size: int) -> int:
-    if type_name in {"e4m3", "e5m10"}:
-        return -1
     return group_size
 
 
@@ -172,7 +184,7 @@ def uses_zero_point(type_name: str, symmetric: bool) -> bool:
 
 
 def weight_family(type_name: str) -> str:
-    return "float" if type_name in {"e2m1", "e4m3"} else "integer"
+    return "float" if is_float_type(type_name) else "integer"
 
 
 def validate_args(parser: argparse.ArgumentParser, args: argparse.Namespace) -> None:
@@ -182,21 +194,11 @@ def validate_args(parser: argparse.ArgumentParser, args: argparse.Namespace) -> 
         parser.error("--output-length must be positive")
     if args.model_length <= 0:
         parser.error("--model-length must be positive")
-    if args.group_size <= 0:
-        parser.error("--group-size must be positive")
+    if args.group_size == 0:
+        parser.error("--group-size must be non-zero")
 
-    if args.type == "int4" and args.group_size not in {32, 64, 128}:
-        parser.error("int4 is only supported with group sizes 32, 64, or 128")
-    if args.type == "int8" and args.group_size not in {32, 64, 128}:
-        parser.error("int8 is only supported with group sizes 32, 64, or 128")
-    if args.type == "e2m1" and args.group_size != 16:
-        parser.error("e2m1 is only supported with group size 16")
-
-    if args.type in {"e5m10", "e4m3", "e2m1"} and (args.kv_fp8 or args.act_fp8):
-        parser.error("KV-cache and activation FP8 perplexity fitting is only supported for integer weight quantization")
-
-    if args.act_fp8 and args.type != "int4":
-        parser.error("FPGA power lookup with activation FP8 is only supported for int4 weights in this predictor")
+    if not (is_float_type(args.type) or is_int_type(args.type)):
+        parser.error("--type must be an integer format like int4 or a float format like e4m3")
 
 
 def quantize(
@@ -246,7 +248,7 @@ def quantize(
             quants = np.round(data / scale[:, None] + zero_point[:, None])
             quants = np.clip(quants, 0, qmax - qmin)
             dequants = (quants - zero_point[:, None]) * scale[:, None]
-    elif re.match(r"e\d+m\d+", type_name):
+    elif FLOAT_TYPE_PATTERN.fullmatch(type_name):
         exponent_bits = int(type_name[1:type_name.find("m")])
         mantissa_bits = int(type_name[type_name.find("m") + 1:])
         exponent_bias = (1 << (exponent_bits - 1)) - 1
@@ -324,7 +326,7 @@ def quant_mse_key(type_name: str, symmetric: bool, group_size: int) -> tuple[str
 
 def scale_spec(type_name: str) -> tuple[str | None, str | None]:
     if type_name == "e2m1":
-        return ("e4m3", "e4m3")
+        return ("e4m3", "e5m10")
     if type_name != "e5m10":
         return ("e5m10", None)
     return (None, None)
@@ -390,7 +392,7 @@ def predict_perplexity(
     symmetric: bool,
     kv_fp8: bool,
     act_fp8: bool,
-) -> tuple[float, float | None]:
+) -> tuple[float | None, float | None]:
     log_ppl = BASELINE_LOG_PPL
     log_variance_terms = []
 
@@ -398,11 +400,13 @@ def predict_perplexity(
         family = weight_family(type_name)
         zero_point = uses_zero_point(type_name, symmetric)
         mse = estimate_quant_mse(type_name, symmetric, group_size)
-        log_ppl += WEIGHT_K[(algo, family, zero_point)] * mse
+        weight_k = WEIGHT_K.get((algo, family, zero_point))
+        if weight_k is None:
+            return None, None
+        log_ppl += weight_k * mse
         stats = WEIGHT_FIT_STATS.get((algo, family, zero_point))
-        if stats is None:
-            return math.exp(log_ppl), None
-        log_variance_terms.append(fit_variance(*stats))
+        if stats is not None:
+            log_variance_terms.append(fit_variance(*stats))
 
     if kv_fp8 or act_fp8:
         delta_key = "KV8A8" if kv_fp8 and act_fp8 else "KV8" if kv_fp8 else "A8"
@@ -473,7 +477,7 @@ def predict_ttft(
 def lookup_fpga_powers(type_name: str, act_fp8: bool) -> tuple[float, float, float, float]:
     key = (type_name, act_fp8)
     if key not in FPGA_GEMM_POWER or key not in FPGA_ON_CHIP_POWER or key not in FPGA_DRAM_POWER:
-        raise ValueError("Unsupported FPGA power lookup for this weight and activation combination")
+        return None, None, None, None
     gemm_power = FPGA_GEMM_POWER[key]
     on_chip_power = FPGA_ON_CHIP_POWER[key]
     dram_power = FPGA_DRAM_POWER[key]
@@ -482,15 +486,17 @@ def lookup_fpga_powers(type_name: str, act_fp8: bool) -> tuple[float, float, flo
 
 
 def format_metric(value: float, rmse: float | None, decimals: int) -> str:
+    if value is None:
+        return "N/A"
     if rmse is None:
         return f"{value:.{decimals}f}"
     return f"{value:.{decimals}f} +/- {rmse:.{decimals}f}"
 
 
-def propagate_e2e_latency(ttft: float, ttft_rmse: float, itl: float, itl_rmse: float, output_length: int) -> tuple[float, float]:
-    e2e_latency = ttft + itl * output_length
-    e2e_rmse = math.sqrt(ttft_rmse ** 2 + (output_length * itl_rmse) ** 2)
-    return e2e_latency, e2e_rmse
+def format_scalar(value: float | None, decimals: int) -> str:
+    if value is None:
+        return "N/A"
+    return f"{value:.{decimals}f}"
 
 
 def main() -> None:
@@ -498,43 +504,35 @@ def main() -> None:
     args = parser.parse_args()
     validate_args(parser, args)
 
-    group_size = effective_group_size(args.type, args.group_size)
     perplexity, perplexity_rmse = predict_perplexity(
         args.algo,
         args.type,
-        group_size,
+        args.group_size,
         args.symmetric,
         args.kv_fp8,
         args.act_fp8,
     )
     memory_gib = predict_memory_footprint_gib(
         args.type,
-        group_size,
+        args.group_size,
         args.symmetric,
         args.kv_fp8,
         args.model_length,
     )
     ttft, ttft_rmse = predict_ttft(
         args.type,
-        group_size,
+        args.group_size,
         args.symmetric,
         args.act_fp8,
         args.input_length,
     )
     latency, latency_rmse = predict_latency(
         args.type,
-        group_size,
+        args.group_size,
         args.symmetric,
         args.kv_fp8,
         args.act_fp8,
         args.input_length,
-        args.output_length,
-    )
-    e2e_latency, e2e_latency_rmse = propagate_e2e_latency(
-        ttft,
-        ttft_rmse,
-        latency,
-        latency_rmse,
         args.output_length,
     )
     gemm_power, on_chip_power, dram_power, total_power = lookup_fpga_powers(args.type, args.act_fp8)
@@ -543,11 +541,10 @@ def main() -> None:
     print(f"Memory Footprint (GiB): {memory_gib:.6f}")
     print(f"4090 First-token Latency (s): {format_metric(ttft, ttft_rmse, 6)}")
     print(f"4090 Inter-token Latency (s): {format_metric(latency, latency_rmse, 6)}")
-    print(f"4090 End-to-end Latency (s): {format_metric(e2e_latency, e2e_latency_rmse, 6)}")
-    print(f"FPGA GEMM Power (W): {gemm_power:.3f}")
-    print(f"FPGA Total On-chip Power (W): {on_chip_power:.3f}")
-    print(f"FPGA DRAM Power (W): {dram_power:.3f}")
-    print(f"FPGA Total Power (W): {total_power:.3f}")
+    print(f"FPGA GEMM Power (W): {format_scalar(gemm_power, 3)}")
+    print(f"FPGA Total On-chip Power (W): {format_scalar(on_chip_power, 3)}")
+    print(f"FPGA DRAM Power (W): {format_scalar(dram_power, 3)}")
+    print(f"FPGA Total Power (W): {format_scalar(total_power, 3)}")
 
 
 if __name__ == "__main__":
